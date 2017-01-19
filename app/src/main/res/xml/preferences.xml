@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:key="wpm"
+        android:title="Speed"
+        android:defaultValue="@integer/wpm" />
+    <Preference
+        android:key="textsize"
+        android:title="Text Size"
+        android:defaultValue="@integer/textsize" />
+    <Preference
+        android:key="chap"
+        android:title="Chapter"
+        android:defaultValue="@integer/chapter" />
+    <Preference
+        android:key="mloc"
+        android:title="Location"
+        android:defaultValue="@integer/location" />
+    <Preference
+        android:key="reader_mode"
+        android:title="Reader"
+        android:defaultValue="@integer/reader_mode" />
+
+</PreferenceScreen>

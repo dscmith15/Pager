@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="wpm">200</integer>
+    <integer name="textsize">32</integer>
+    <integer name="chapter">1</integer>
+    <integer name="location">0</integer>
+    <integer name="reader_mode">1</integer>
+</resources>

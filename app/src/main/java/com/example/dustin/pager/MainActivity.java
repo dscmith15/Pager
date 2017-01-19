@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 
 import android.os.Build;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 
 import android.os.Environment;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -79,15 +81,22 @@ public class MainActivity extends AppCompatActivity {
     private String wpm = "NAN";
     public int lastloc = 1;
 
+    public Boolean settopen = false;
+
 
     private int PassageCount=0;
 
     private boolean begin = false;
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
         setContentView(R.layout.activity_main);
         toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 
@@ -303,87 +312,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         //Deals with the actual clicking
         switch (item.getItemId()) {
-            case R.id.demo_1:
-                if (item.isChecked()) item.setChecked(false);
-                else item.setChecked(true);
-                loadText("practice4.txt",lastloc);
-                prepView();
-                displayText("Demo Text Initiated");
-                prepView();
-                return true;
-            case R.id.passage_1:
-                if (item.isChecked()) item.setChecked(false);
-                else item.setChecked(true);
-                loadText("passage1.txt",lastloc);
-                displayText("Passage 1 Initiated");
-                prepView();
-                return true;
-            case R.id.passage_2:
-                if (item.isChecked()) item.setChecked(false);
-                else item.setChecked(true);
-                loadText("passage2.txt",lastloc);
-                displayText("Passage 2 Initiated");
-                prepView();
-                return true;
-            case R.id.passage_3:
-                if (item.isChecked()) item.setChecked(false);
-                else item.setChecked(true);
-                loadText("passage3.txt",lastloc);
-                displayText("Passage 3 Initiated");
-                prepView();
-                return true;
-            case R.id.passage_4:
-                if (item.isChecked()) item.setChecked(false);
-                else item.setChecked(true);
-                loadText("passage4.txt",lastloc);
-                displayText("Passage 4 Initiated");
-                prepView();
-                return true;
-            case R.id.passage_5:
-                if (item.isChecked()) item.setChecked(false);
-                else item.setChecked(true);
-                loadText("passage5.txt",lastloc);
-                displayText("Passage 5 Initiated");
-                prepView();
-                return true;
-            case R.id.passage_6:
-                if (item.isChecked()) item.setChecked(false);
-                else item.setChecked(true);
-                loadText("passage6.txt",lastloc);
-                displayText("Passage 6 Initiated");
-                prepView();
-                return true;
-            case R.id.passage_7:
-                if (item.isChecked()) item.setChecked(false);
-                else item.setChecked(true);
-                loadText("passage7.txt",lastloc);
-                displayText("Passage 7 Initiated");
-                prepView();
-                return true;
-            case R.id.passage_8:
-                if (item.isChecked()) item.setChecked(false);
-                else item.setChecked(true);
-                loadText("passage8.txt",lastloc);
-                displayText("Passage 8 Initiated");
-                prepView();
-                return true;
-            case R.id.passage_9:
-                if (item.isChecked()) item.setChecked(false);
-                else item.setChecked(true);
-                loadText("passage9.txt",lastloc);
-                displayText("Passage 9 Initiated");
-                prepView();
-                return true;
-            case R.id.passage_10:
-                if (item.isChecked()) item.setChecked(false);
-                else item.setChecked(true);
-                loadText("passage10.txt",lastloc);
-                displayText("Passage 10 Initiated");
-                prepView();
-                return true;
-            case R.id.exit_the_app:
-                finish();
-                return true;
 
             case R.id.hide_button:
 
@@ -402,6 +330,19 @@ public class MainActivity extends AppCompatActivity {
                     hidden = false;
 
                 }
+                return true;
+
+            case R.id.sett:
+                if(settopen == false) {
+                    getFragmentManager().beginTransaction()
+                            .replace(android.R.id.content, new SettingsFragment())
+                            .commit();
+                    settopen = true;
+                } else {
+
+                    settopen = false;
+                }
+
                 return true;
 
             default:
@@ -466,30 +407,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public File getDataStorageDir(String DataName) {
-        // Get the directory for the user's public pictures directory.
-        File file = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOCUMENTS), DataName);
-        if (!file.mkdirs()) {
-            Log.e(LOG_TAG, "Directory not created");
-        }
-        return file;
-    }
 
-    private void writeStringToTextFile(String s, String f){
-        File sdCard = getDataStorageDir(f);
-        File dir = new File (sdCard.getAbsolutePath());
-        dir.mkdirs();
-        File file = new File(dir, f);
-        try{
-            FileOutputStream f1 = new FileOutputStream(file,true); //True = Append to file, false = Overwrite
-            PrintStream p = new PrintStream(f1);
-            p.print(s);
-            p.close();
-            f1.close();
-        } catch (FileNotFoundException e) {
-        } catch (IOException e) {
-        }   }
 
 
 }
