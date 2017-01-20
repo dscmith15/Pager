@@ -1,24 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="first_preferencescreen">
     <Preference
-        android:key="wpm"
+        android:key="wpm_pref"
         android:title="Speed"
+        android:summary="@integer/wpm"
         android:defaultValue="@integer/wpm" />
     <Preference
-        android:key="textsize"
+        android:key="textsize_pref"
         android:title="Text Size"
+        android:summary="@integer/textsize"
         android:defaultValue="@integer/textsize" />
     <Preference
-        android:key="chap"
+        android:key="chap_pref"
         android:title="Chapter"
+        android:summary="@integer/chapter"
         android:defaultValue="@integer/chapter" />
     <Preference
-        android:key="mloc"
+        android:key="location_pref"
         android:title="Location"
+        android:summary="@integer/location"
         android:defaultValue="@integer/location" />
-    <Preference
-        android:key="reader_mode"
+    <ListPreference
+        android:key="reader_pref"
         android:title="Reader"
-        android:defaultValue="@integer/reader_mode" />
+        android:entries="@array/readers"
+        android:entryValues="@array/readers_val"/>
 
 </PreferenceScreen>

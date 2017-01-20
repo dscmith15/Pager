@@ -41,5 +41,16 @@
         <item>Casual</item>
         <item>Experiment</item>
     </string-array>
+    <string-array name="readers">
+        <item>Pager</item>
+        <item>Scroll</item>
+        <item>RSVP</item>
+    </string-array>
+    <string-array name="readers_val">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
 
 </resources>

@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 
@@ -14,6 +15,7 @@ import android.os.Bundle;
 
 import android.os.Environment;
 import android.os.Vibrator;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -41,6 +43,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.util.prefs.Preferences;
 
 // this is the section of imports for epub reading
 import nl.siegmann.epublib.domain.Book;
@@ -64,8 +67,8 @@ public class MainActivity extends AppCompatActivity {
 
     public Pagination mPagination;
     public CharSequence mText;
-    public int mCurrentIndex = 0;
-    public int textsize = 32;
+    public int mCurrentIndex;
+    public int textsize;
     public int textchg = 5;
     public Toast toast;
     public String literature;
@@ -79,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
     private String passage;
     private String[][] orders;
     private String wpm = "NAN";
-    public int lastloc = 1;
+    public int lastloc;
 
     public Boolean settopen = false;
 
@@ -87,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
     private int PassageCount=0;
 
     private boolean begin = false;
+    public SharedPreferences prefs;
+    public SharedPreferences.Editor editor;
 
 
 
@@ -95,13 +100,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
 
         setContentView(R.layout.activity_main);
         toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 
         mTextView = (TextView) findViewById(R.id.tv);
 
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        textsize = prefs.getInt("textsize_pref",32);
+        lastloc =  prefs.getInt("chap_pref",1);
+        mCurrentIndex = prefs.getInt("location_pref",0);
+        final SharedPreferences.Editor editor = prefs.edit();
 
         inctexsize = (ImageButton) findViewById(R.id.inctex);
         dectexsize = (ImageButton) findViewById(R.id.dectex);
@@ -154,6 +165,9 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_forward).setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
+                lastloc =  prefs.getInt("chap_pref",lastloc);
+                mCurrentIndex = prefs.getInt("location_pref",mCurrentIndex);
+
                 if (begin == false) {
                     mTextView.setVisibility(View.VISIBLE);
                     firstTextView.setVisibility(View.INVISIBLE);
@@ -161,24 +175,6 @@ public class MainActivity extends AppCompatActivity {
                     begin = true;
                 } else {
                     mCurrentIndex = (mCurrentIndex < mPagination.size() - 1) ? mCurrentIndex + 1 : mPagination.size() - 1;
-
-                    //commenting below for a while to see if needed
-                    /*if (passageflag & mode == -2) {
-                        endTime = System.nanoTime() - starttime;
-
-                        vibrator.vibrate(1000);
-                        begin = false;
-                        mTextView.setVisibility(View.INVISIBLE);
-                        firstTextView.setVisibility(View.VISIBLE);
-
-                        passageflag = false;
-                        String pdata = "data.txt";
-                        writeStringToTextFile(Integer.toString(pnum) + "\t" + "Pager" + "\t" + passage + "\t" + Long.toString(endTime) + "\t" + wpm + "\t" + Integer.toString(textsize) + "\t" + Long.toString(litSplit.length) + "\n", pdata);
-                        mCurrentIndex++;
-                        DialogFragment nextPasFrag = new NextPassageDialog();
-                        nextPasFrag.show(getFragmentManager(), "nextPasFrag");
-                    }*/
-
                     if (mCurrentIndex == mPagination.size() - 1) {
                         //passageflag is used to know if the passage is over
                         passageflag = true;
@@ -192,6 +188,9 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 }
+                editor.putInt("chap_pref", lastloc); // value to store
+                editor.putInt("location_pref", mCurrentIndex);
+                editor.commit();
 
 
                 update();
@@ -256,6 +255,10 @@ public class MainActivity extends AppCompatActivity {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void incTextsize(View view){
         textsize+=textchg;
+        final SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("textsize_pref", textsize);
+        editor.commit();
+
         mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
 
         mPagination = new Pagination(mText,
@@ -281,6 +284,10 @@ public class MainActivity extends AppCompatActivity {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void decTextsize(View view){
         textsize-=textchg;
+        final SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("textsize_pref", textsize);
+        editor.commit();
+
         mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
 
         mPagination = new Pagination(mText,
@@ -333,16 +340,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.sett:
-                if(settopen == false) {
-                    getFragmentManager().beginTransaction()
-                            .replace(android.R.id.content, new SettingsFragment())
-                            .commit();
-                    settopen = true;
-                } else {
-
-                    settopen = false;
-                }
-
+                //Id like to put my settings here please
+                Intent settings = new Intent(this, SettingsActivity.class);
+                startActivity(settings);
                 return true;
 
             default:
