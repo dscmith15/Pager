@@ -342,6 +342,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.sett:
                 //Id like to put my settings here please
                 Intent settings = new Intent(this, SettingsActivity.class);
+                
                 startActivity(settings);
                 return true;
 

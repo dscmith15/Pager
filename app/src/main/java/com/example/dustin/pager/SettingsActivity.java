@@ -50,9 +50,15 @@ public class SettingsActivity extends PreferenceActivity {
                 connectionPref.setSummary(sharedPreferences.getString(key, ""));
             }
         }
+        @Override
         public void onResume() {
             super.onResume();
-
+            getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        }
+        @Override
+        public void onPause() {
+            getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+            super.onPause();
         }
     }
 
