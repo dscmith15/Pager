@@ -109,9 +109,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        textsize = prefs.getInt("textsize_pref",32);
-        lastloc =  prefs.getInt("chap_pref",1);
-        mCurrentIndex = prefs.getInt("location_pref",0);
+        textsize = prefs.getInt("textsize", 32);
+        lastloc =  prefs.getInt("chap_pref", 1);
+        mCurrentIndex = prefs.getInt("location_pref", 0);
         final SharedPreferences.Editor editor = prefs.edit();
 
         inctexsize = (ImageButton) findViewById(R.id.inctex);
@@ -340,16 +340,18 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.sett:
-                //Id like to put my settings here please
-                Intent settings = new Intent(this, SettingsActivity.class);
-                
+
+                Intent settings = new Intent(this, AppPreferences.class);
                 startActivity(settings);
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
+
+
     }
+
     private void loadorders(final String file) {
         try {
             orders = new String[30][2];
@@ -407,6 +409,7 @@ public class MainActivity extends AppCompatActivity {
             pnumFrag.show(getFragmentManager(), "PnumFrag");
         }
     }
+
 
 
 

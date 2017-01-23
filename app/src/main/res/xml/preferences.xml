@@ -28,4 +28,5 @@
         android:entries="@array/readers"
         android:entryValues="@array/readers_val"/>
 
+
 </PreferenceScreen>
