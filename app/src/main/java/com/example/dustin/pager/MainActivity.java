@@ -108,9 +108,9 @@ public class MainActivity extends AppCompatActivity {
         mTextView = (TextView) findViewById(R.id.tv);
 
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         textsize = prefs.getInt("textsize", 32);
-        lastloc =  prefs.getInt("chap_pref", 1);
+        lastloc =  prefs.getInt("chap_pref", 2);
         mCurrentIndex = prefs.getInt("location_pref", 0);
         final SharedPreferences.Editor editor = prefs.edit();
 
@@ -126,10 +126,6 @@ public class MainActivity extends AppCompatActivity {
 
         firstTextView = (TextView) findViewById(R.id.word_landing);
         firstTextView.setSelected(true);
-
-        //DialogFragment modeFrag = new ModeDialogFragment();
-        //modeFrag.show(getFragmentManager(),"Mode Frag");
-        loadorders("Random_Orders_Pager.csv");
         spanString = new SpannableString(Html.fromHtml(literature));
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         mText = spanString;
@@ -158,15 +154,21 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                lastloc =  prefs.getInt("chap_pref",1);
+                mCurrentIndex = prefs.getInt("location_pref",0);
                 mCurrentIndex = (mCurrentIndex > 0) ? mCurrentIndex - 1 : 0;
+                editor.putInt("chap_pref", lastloc); // value to store
+                editor.putInt("location_pref", mCurrentIndex);
+                editor.commit();
                 update();
+
             }
         });
         findViewById(R.id.btn_forward).setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                lastloc =  prefs.getInt("chap_pref",lastloc);
-                mCurrentIndex = prefs.getInt("location_pref",mCurrentIndex);
+                lastloc =  prefs.getInt("chap_pref",1);
+                mCurrentIndex = prefs.getInt("location_pref",0);
 
                 if (begin == false) {
                     mTextView.setVisibility(View.VISIBLE);
@@ -339,6 +341,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return true;
 
+            case R.id.rsvp:
+                Intent m_rsvp = new Intent(this, RsvpActivity.class);
+                startActivity(m_rsvp);
+                return true;
             case R.id.sett:
 
                 Intent settings = new Intent(this, AppPreferences.class);

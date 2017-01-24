@@ -10,6 +10,10 @@
             app:showAsAction="ifRoom"
 
             />
+        <item android:id="@+id/rsvp"
+            android:title="@string/rsvp"
+            app:showAsAction="ifRoom"
+            />
         <item android:id="@+id/sett"
             android:title="@string/sett"
             app:showAsAction="ifRoom"

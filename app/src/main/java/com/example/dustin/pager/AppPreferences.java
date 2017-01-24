@@ -8,10 +8,8 @@ import android.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import static com.example.dustin.pager.SettingsActivity.KEY_PREF_SYNC_CONN;
-
 public class AppPreferences extends AppCompatActivity {
-
+    public static final String KEY_PREF_SYNC_CONN = "pref_syncConnectionType";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -4,29 +4,23 @@
     android:key="first_preferencescreen">
     <Preference
         android:key="wpm_pref"
-        android:title="Speed"
-        android:summary="@integer/wpm"
-        android:defaultValue="@integer/wpm" />
+        android:title="Speed" />
     <Preference
         android:key="textsize_pref"
         android:title="Text Size"
-        android:summary="@integer/textsize"
-        android:defaultValue="@integer/textsize" />
+         />
     <Preference
         android:key="chap_pref"
         android:title="Chapter"
-        android:summary="@integer/chapter"
-        android:defaultValue="@integer/chapter" />
+         />
     <Preference
         android:key="location_pref"
         android:title="Location"
-        android:summary="@integer/location"
-        android:defaultValue="@integer/location" />
+         />
     <ListPreference
         android:key="reader_pref"
         android:title="Reader"
-        android:entries="@array/readers"
-        android:entryValues="@array/readers_val"/>
+        />
 
 
 </PreferenceScreen>

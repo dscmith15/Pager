@@ -24,7 +24,11 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name=".AppPreferences"></activity>
+        <activity android:name=".AppPreferences" />
+        <activity
+            android:name=".RsvpActivity"
+            android:label="@string/title_activity_rsvp"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
