@@ -24,7 +24,7 @@
     <string name="contin">Are you Ready to continue?</string>
     <string name="notyet">Not yet</string>
     <string name="nexpas">Next passage</string>
-    <string name="sett">Settings</string>
+    <string name="pager_m">Pager</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->
@@ -100,4 +100,11 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="title_activity_rsvp">RsvpActivity</string>
+    <string name="title_activity_pager">PagerActivity</string>
+    <string name="preference_file_key" />
+    <string name="textsize" />
+    <string name="location_pref" />
+    <string name="wpm" />
+    <string name="chapter_pref" />
+    <string name="wpm_saved" />
 </resources>

@@ -55,7 +55,7 @@ public class RsvpActivity extends AppCompatActivity {
     ImageButton pauser;
 
     MenuItem hider;
-    public int lastloc = 2;
+    public int lastloc;
 
 
 
@@ -91,7 +91,8 @@ public class RsvpActivity extends AppCompatActivity {
 
     private long mDelay;
     public SharedPreferences prefs;
-
+    public SharedPreferences.Editor editor;
+    public static final String PREFS_NAME = "preference_file";
 
 
     @Override
@@ -121,15 +122,18 @@ public class RsvpActivity extends AppCompatActivity {
         toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        textsize = prefs.getInt("textsize", 32);
-        lastloc =  prefs.getInt("chap_pref", 1);
-        counter = prefs.getInt("location_pref", 0);
-        wpm = prefs.getInt("wpm", 200);
+        prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        textsize = prefs.getInt(getString(R.string.textsize), 32);
+        lastloc =  prefs.getInt(getString(R.string.chapter_pref), 2);
+        counter = prefs.getInt(getString(R.string.location_pref), 0);
+        wpm = prefs.getInt(getString(R.string.wpm_saved), 200);
+
         mDelay= 60000/wpm;
+        editor = prefs.edit();
+
+        displayText(Integer.toString(wpm));
 
         loadText("AIWL.epub",lastloc);
-
 
 
         loadorders("Random_Orders_Spritz.csv");
@@ -138,9 +142,6 @@ public class RsvpActivity extends AppCompatActivity {
         System.out.println(litSplit[1]);
         firstTextView = (TextView) findViewById(R.id.word_landing);
         firstTextView.setSelected(true);
-
-
-
 
         RSVP = new Thread(new Runnable() {
             @Override
@@ -154,7 +155,6 @@ public class RsvpActivity extends AppCompatActivity {
 
                                 Thread.sleep(mDelay);
 
-
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -162,6 +162,7 @@ public class RsvpActivity extends AppCompatActivity {
 
                                             firstTextView.setText(litSplit[counter]);
                                             counter=counter+1;
+                                            editor.putInt(getString(R.string.location_pref), counter);
                                             mDelay=(long)((60000*delayValue()) / wpm);
 
                                         }
@@ -170,6 +171,7 @@ public class RsvpActivity extends AppCompatActivity {
                                             lastloc++;
                                             displayText("next chapter");
                                             loadText("AIWL.epub", lastloc);
+                                            editor.putInt(getString(R.string.chapter_pref), lastloc);
 
 
                                         }
@@ -205,18 +207,7 @@ public class RsvpActivity extends AppCompatActivity {
 
 
 
-    public void onPnumSelectValue(int which) {
-        pnum = which+1;
-        displayText("Participant " + Integer.toString(pnum)+ " Selected");
-    }
-    public void onModeSelectValue(int id) {
-        mode = id;
-        if (mode==-2){
-            DialogFragment pnumFrag = new PnumDialogFragment();
-            pnumFrag.show(getFragmentManager(), "PnumFrag");
-        }
 
-    }
 
     public void onnextSelectValue(int id) {
         if (id == -2){
@@ -239,6 +230,7 @@ public class RsvpActivity extends AppCompatActivity {
 
             firstTextView.setText(litSplit[counter]);
             counter++;
+            editor.putInt(getString(R.string.location_pref), counter);
             if (!threadSuspended) {
                 threadSuspended = true;
                 pauser.setVisibility(View.INVISIBLE);
@@ -254,6 +246,7 @@ public class RsvpActivity extends AppCompatActivity {
 
         if(counter>0){
             counter--;
+            editor.putInt(getString(R.string.location_pref), counter);
             firstTextView.setText(litSplit[counter]);
             if (!threadSuspended) {
                 threadSuspended = true;
@@ -362,10 +355,7 @@ public class RsvpActivity extends AppCompatActivity {
             pausedInd.setVisibility(View.INVISIBLE);
 
         }
-        if (counter==litSplit.length+1 & mode==-2){
-            DialogFragment nextPasFrag = new NextPassageDialog();
-            nextPasFrag.show(getFragmentManager(), "nextPasFrag");
-        }
+
 
     }
     public void pauseRSVP(View view) {
@@ -404,11 +394,6 @@ public class RsvpActivity extends AppCompatActivity {
 
     }
 
-
-
-
-
-
     //action bar stuff
     public boolean onCreateOptionsMenu(Menu menu){
         //make it appear
@@ -437,11 +422,15 @@ public class RsvpActivity extends AppCompatActivity {
 
                 }
                 return true;
-
-            case R.id.sett:
-
-                Intent settings = new Intent(this, AppPreferences.class);
-                startActivity(settings);
+            case R.id.rsvp:
+                Intent m_rsvp = new Intent(this, RsvpActivity.class);
+                startActivity(m_rsvp);
+                finish();
+                return true;
+            case R.id.pager_m:
+                Intent pagerm = new Intent(this, PagerActivity.class);
+                startActivity(pagerm);
+                finish();
                 return true;
 
             default:
