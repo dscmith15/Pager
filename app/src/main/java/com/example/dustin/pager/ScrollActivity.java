@@ -3,6 +3,7 @@ package com.example.dustin.pager;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.os.Environment;
@@ -90,6 +91,7 @@ public class ScrollActivity extends AppCompatActivity {
     private boolean passageswitch = true;
     public int lastloc = 2;
     Thread timeNano;
+    public String ebook;
 
 
     //this should help with frame issue
@@ -99,12 +101,21 @@ public class ScrollActivity extends AppCompatActivity {
 
     private int PassageCount=0;
 
+    public SharedPreferences prefs;
+    public SharedPreferences.Editor editor;
+    public static final String PREFS_NAME = "User_Data";
+
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        textsize = prefs.getInt("fontsize", 32);
+        lastloc =  prefs.getInt("chapter", 2);
+        counter = prefs.getInt("location", 0);
+        ebook = prefs.getString("book","AIWL.epub");
 
         setContentView(R.layout.activity_scroll);
         firstTextView = (TextView) findViewById(R.id.word_landing);
@@ -128,15 +139,19 @@ public class ScrollActivity extends AppCompatActivity {
 
 
 
+
+
         toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 
 
 
         scrolltext=(ScrollTextView) findViewById(R.id.scrolltext);
         scrolltext.setSelected(true);
-        loadText("AIWL.epub",lastloc);
+        loadText(ebook,lastloc);
         scrolltext.setText(literature);
         scrolltext.setTextColor(Color.BLACK);
+        scrolltext.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
+        firstTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
         scrolltext.startScroll();
         started = false;
         scrolltext.pauseScroll();
@@ -167,18 +182,19 @@ public class ScrollActivity extends AppCompatActivity {
                             if (completed & mode == -2 & passageswitch) {
                                 Thread.sleep(1);
                                 endTime = System.nanoTime() - starttime;
-                                vibrator.vibrate(1000);
+
                                 passageswitch=false;
                                 passageflag = false;
-
+                                loadText(ebook,lastloc);
                                 completed = false;
                                 scrolltext.setDone(completed);
                                 passageswitch=true;
                             }
                             if (completed & mode == -1){
                                 paused=true;
-                                vibrator.vibrate(1000);
+
                                 lastloc++;
+                                loadText(ebook,lastloc);
 
                                 completed = false;
                                 scrolltext.setDone(completed);
@@ -403,16 +419,31 @@ public class ScrollActivity extends AppCompatActivity {
                 return true;
 
             case R.id.rsvp:
+                editor = prefs.edit();
+                editor.putInt("chapter", lastloc); // value to store
+                editor.putInt("location", counter);
+                editor.putInt("fontsize", textsize);
+                editor.commit();
                 Intent m_rsvp = new Intent(this, RsvpActivity.class);
                 startActivity(m_rsvp);
                 finish();
                 return true;
             case R.id.pager_m:
+                editor = prefs.edit();
+                editor.putInt("chapter", lastloc); // value to store
+                editor.putInt("location", counter);
+                editor.putInt("fontsize", textsize);
+                editor.commit();
                 Intent pagerm = new Intent(this, PagerActivity.class);
                 startActivity(pagerm);
                 finish();
                 return true;
             case R.id.scroller:
+                editor = prefs.edit();
+                editor.putInt("chapter", lastloc); // value to store
+                editor.putInt("location", counter);
+                editor.putInt("fontsize", textsize);
+                editor.commit();
                 Intent scrollm = new Intent(this, ScrollActivity.class);
                 startActivity(scrollm);
                 finish();

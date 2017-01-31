@@ -31,6 +31,10 @@
             android:name=".PagerActivity"
             android:label="@string/title_activity_pager"
             android:screenOrientation="landscape"></activity>
+        <activity
+            android:name=".ScrollActivity"
+            android:label="@string/title_activity_scroll"
+            android:screenOrientation="landscape"></activity>
     </application>
 
 </manifest>

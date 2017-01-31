@@ -92,13 +92,19 @@ public class RsvpActivity extends AppCompatActivity {
     private long mDelay;
     public SharedPreferences prefs;
     public SharedPreferences.Editor editor;
-    public static final String PREFS_NAME = "preference_file";
+    public static final String PREFS_NAME = "User_Data";
+    public String ebook;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        textsize = prefs.getInt("fontsize", 32);
+        lastloc =  prefs.getInt("chapter", 2);
+        counter = prefs.getInt("location", 0);
+        wpm = prefs.getInt("rsvpSpeed", 250);
+        ebook = prefs.getString("book","AIWL.epub");
 
         setContentView(R.layout.activity_mrsvp);
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -122,18 +128,14 @@ public class RsvpActivity extends AppCompatActivity {
         toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 
 
-        prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        textsize = prefs.getInt(getString(R.string.textsize), 32);
-        lastloc =  prefs.getInt(getString(R.string.chapter_pref), 2);
-        counter = prefs.getInt(getString(R.string.location_pref), 0);
-        wpm = prefs.getInt(getString(R.string.wpm_saved), 200);
+
 
         mDelay= 60000/wpm;
-        editor = prefs.edit();
+
 
         displayText(Integer.toString(wpm));
 
-        loadText("AIWL.epub",lastloc);
+        loadText(ebook,lastloc);
 
 
         loadorders("Random_Orders_Spritz.csv");
@@ -142,6 +144,7 @@ public class RsvpActivity extends AppCompatActivity {
         System.out.println(litSplit[1]);
         firstTextView = (TextView) findViewById(R.id.word_landing);
         firstTextView.setSelected(true);
+        firstTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
 
         RSVP = new Thread(new Runnable() {
             @Override
@@ -162,7 +165,6 @@ public class RsvpActivity extends AppCompatActivity {
 
                                             firstTextView.setText(litSplit[counter]);
                                             counter=counter+1;
-                                            editor.putInt(getString(R.string.location_pref), counter);
                                             mDelay=(long)((60000*delayValue()) / wpm);
 
                                         }
@@ -170,7 +172,7 @@ public class RsvpActivity extends AppCompatActivity {
                                             passageflag=true;
                                             lastloc++;
                                             displayText("next chapter");
-                                            loadText("AIWL.epub", lastloc);
+                                            loadText(ebook, lastloc);
                                             editor.putInt(getString(R.string.chapter_pref), lastloc);
 
 
@@ -230,7 +232,7 @@ public class RsvpActivity extends AppCompatActivity {
 
             firstTextView.setText(litSplit[counter]);
             counter++;
-            editor.putInt(getString(R.string.location_pref), counter);
+
             if (!threadSuspended) {
                 threadSuspended = true;
                 pauser.setVisibility(View.INVISIBLE);
@@ -246,7 +248,7 @@ public class RsvpActivity extends AppCompatActivity {
 
         if(counter>0){
             counter--;
-            editor.putInt(getString(R.string.location_pref), counter);
+
             firstTextView.setText(litSplit[counter]);
             if (!threadSuspended) {
                 threadSuspended = true;
@@ -423,13 +425,36 @@ public class RsvpActivity extends AppCompatActivity {
                 }
                 return true;
             case R.id.rsvp:
+                editor = prefs.edit();
+                editor.putInt("chapter", lastloc); // value to store
+                editor.putInt("location", counter);
+                editor.putInt("fontsize", textsize);
+                editor.putInt("rsvpSpeed",wpm);
+                editor.commit();
                 Intent m_rsvp = new Intent(this, RsvpActivity.class);
                 startActivity(m_rsvp);
                 finish();
                 return true;
             case R.id.pager_m:
+                editor = prefs.edit();
+                editor.putInt("chapter", lastloc); // value to store
+                editor.putInt("location", counter);
+                editor.putInt("fontsize", textsize);
+                editor.putInt("rsvpSpeed",wpm);
+                editor.commit();
                 Intent pagerm = new Intent(this, PagerActivity.class);
                 startActivity(pagerm);
+                finish();
+                return true;
+            case R.id.scroller:
+                editor = prefs.edit();
+                editor.putInt("chapter", lastloc); // value to store
+                editor.putInt("location", counter);
+                editor.putInt("fontsize", textsize);
+                editor.putInt("rsvpSpeed",wpm);
+                editor.commit();
+                Intent scrollm = new Intent(this, ScrollActivity.class);
+                startActivity(scrollm);
                 finish();
                 return true;
 

@@ -26,7 +26,8 @@
         android:layout_toLeftOf="@+id/pagerbutton"
         android:layout_toStartOf="@+id/pagerbutton"
         android:layout_marginRight="222dp"
-        android:layout_marginEnd="222dp" />
+        android:layout_marginEnd="222dp"
+        android:onClick="pickScroll"/>
 
     <Button
         android:text="RSVP"

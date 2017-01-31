@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
     public SharedPreferences prefs;
     public SharedPreferences.Editor editor;
-    public static final String PREFS_NAME = "preference_file";
+    public static final String PREFS_NAME = "User_Data";
 
 
     Button pickpager;
@@ -69,12 +69,18 @@ public class MainActivity extends AppCompatActivity {
 
 
         prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        textsize = prefs.getInt(getString(R.string.textsize), 32);
-        lastloc =  prefs.getInt(getString(R.string.chapter_pref), 2);
-        mCurrentIndex = prefs.getInt(getString(R.string.location_pref), 0);
-        wpm = prefs.getInt(getString(R.string.wpm_saved), 200);
-
         editor = prefs.edit();
+
+        editor.putInt("chapter", 2);
+        editor.putInt("location", 0);
+        editor.putInt("fontsize", 32);
+        editor.putInt("rsvpSpeed",250);
+        editor.putInt("scrollSpeed",200);
+        editor.putString("book","QueenVictoria.epub");
+
+        editor.commit();
+
+
 
         pickpager = (Button) findViewById(R.id.pagerbutton);
         pickrsvp = (Button) findViewById(R.id.rsvpbutton);
@@ -91,7 +97,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
     public void pickScroll(View view){
-
+        Intent scrollm = new Intent(this, ScrollActivity.class);
+        startActivity(scrollm);
+        finish();
     }
     public void pickRSVP(View view){
         Intent m_rsvp = new Intent(this, RsvpActivity.class);
@@ -146,6 +154,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(pagerm);
                 finish();
                 return true;
+            case R.id.scroller:
+                Intent scrollm = new Intent(this, ScrollActivity.class);
+                startActivity(scrollm);
+                finish();
+                return true;
+
 
             default:
                 return super.onOptionsItemSelected(item);

@@ -63,6 +63,7 @@ public class PagerActivity extends AppCompatActivity {
     private long starttime;
     private long endTime;
     private boolean started = false;
+    public String ebook;
 
 
     public Pagination mPagination;
@@ -92,27 +93,22 @@ public class PagerActivity extends AppCompatActivity {
     private boolean begin = false;
     public SharedPreferences prefs;
     public SharedPreferences.Editor editor;
-    public static final String PREFS_NAME = "preference_file";
+    public static final String PREFS_NAME = "User_Data";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        textsize = prefs.getInt("fontsize", 32);
+        lastloc =  prefs.getInt("chapter", 2);
+        mCurrentIndex = prefs.getInt("location", 0);
+        ebook = prefs.getString("book","AIWL.epub");
 
 
         setContentView(R.layout.activity_pager);
         toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 
         mTextView = (TextView) findViewById(R.id.tv);
-
-
-        prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        textsize = prefs.getInt(getString(R.string.textsize), 32);
-        lastloc =  prefs.getInt(getString(R.string.chapter_pref), 2);
-        mCurrentIndex = prefs.getInt(getString(R.string.location_pref), 0);
-        wpm = prefs.getInt(getString(R.string.wpm_saved), 200);
-
-        editor = prefs.edit();
 
         inctexsize = (ImageButton) findViewById(R.id.inctex);
         dectexsize = (ImageButton) findViewById(R.id.dectex);
@@ -122,7 +118,7 @@ public class PagerActivity extends AppCompatActivity {
         inctexsize.setVisibility(View.INVISIBLE);
         dectexsize.setVisibility(View.INVISIBLE);
 
-        loadText("AIWL.epub", lastloc);
+        loadText(ebook, lastloc);
 
         firstTextView = (TextView) findViewById(R.id.word_landing);
         firstTextView.setSelected(true);
@@ -131,6 +127,8 @@ public class PagerActivity extends AppCompatActivity {
         mText = spanString;
 
         mTextView.setVisibility(View.INVISIBLE);
+        mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
+        firstTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
         mTextView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
             @Override
@@ -154,12 +152,8 @@ public class PagerActivity extends AppCompatActivity {
         findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                lastloc =  prefs.getInt(getString(R.string.chapter_pref),1);
-                mCurrentIndex = prefs.getInt(getString(R.string.location_pref),0);
+
                 mCurrentIndex = (mCurrentIndex > 0) ? mCurrentIndex - 1 : 0;
-                editor.putInt(getString(R.string.chapter_pref), lastloc); // value to store
-                editor.putInt(getString(R.string.location_pref), mCurrentIndex);
-                editor.commit();
                 update();
 
             }
@@ -181,9 +175,8 @@ public class PagerActivity extends AppCompatActivity {
                         //passageflag is used to know if the passage is over
                         passageflag = true;
                         lastloc++;
-                        editor.putInt(getString(R.string.chapter_pref), lastloc); // value to store
                         displayText("next chapter");
-                        loadText("AIWL.epub", lastloc);
+                        loadText(ebook, lastloc);
 
                         prepView();
                         passageflag = false;
@@ -192,9 +185,7 @@ public class PagerActivity extends AppCompatActivity {
 
                 }
 
-                editor.putInt(getString(R.string.location_pref), mCurrentIndex);
-                displayText(Integer.toString(lastloc));
-                editor.commit();
+
 
 
                 update();
@@ -260,9 +251,6 @@ public class PagerActivity extends AppCompatActivity {
     public void incTextsize(View view){
         textsize+=textchg;
 
-        editor.putInt("textsize_pref", textsize);
-        editor.commit();
-
         mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
 
         mPagination = new Pagination(mText,
@@ -283,9 +271,6 @@ public class PagerActivity extends AppCompatActivity {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void decTextsize(View view){
         textsize-=textchg;
-
-        editor.putInt("textsize_pref", textsize);
-        editor.commit();
 
         mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
 
@@ -339,13 +324,33 @@ public class PagerActivity extends AppCompatActivity {
                 return true;
 
             case R.id.rsvp:
+                editor = prefs.edit();
+                editor.putInt("chapter", lastloc); // value to store
+                editor.putInt("location", mCurrentIndex);
+                editor.putInt("fontsize", textsize);
+                editor.commit();
                 Intent m_rsvp = new Intent(this, RsvpActivity.class);
                 startActivity(m_rsvp);
                 finish();
                 return true;
             case R.id.pager_m:
+                editor = prefs.edit();
+                editor.putInt("chapter", lastloc); // value to store
+                editor.putInt("location", mCurrentIndex);
+                editor.putInt("fontsize", textsize);
+                editor.commit();
                 Intent pagerm = new Intent(this, PagerActivity.class);
                 startActivity(pagerm);
+                finish();
+                return true;
+            case R.id.scroller:
+                editor = prefs.edit();
+                editor.putInt("chapter", lastloc); // value to store
+                editor.putInt("location", mCurrentIndex);
+                editor.putInt("fontsize", textsize);
+                editor.commit();
+                Intent scrollm = new Intent(this, ScrollActivity.class);
+                startActivity(scrollm);
                 finish();
                 return true;
 
