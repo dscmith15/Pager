@@ -1,6 +1,6 @@
 package com.example.dustin.pager;
 
-import android.app.DialogFragment;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,11 +8,9 @@ import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Vibrator;
-import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
 import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
@@ -36,6 +34,8 @@ import java.io.PrintStream;
 
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.epub.EpubReader;
+
+import static java.lang.Math.round;
 
 public class RsvpActivity extends AppCompatActivity {
 
@@ -173,7 +173,7 @@ public class RsvpActivity extends AppCompatActivity {
                                             lastloc++;
                                             displayText("next chapter");
                                             loadText(ebook, lastloc);
-                                            editor.putInt(getString(R.string.chapter_pref), lastloc);
+
 
 
                                         }
@@ -286,7 +286,7 @@ public class RsvpActivity extends AppCompatActivity {
             }
             was.close();
             literature = sb.toString();
-            counter = 0;
+
             litSplit = Html.fromHtml(literature).toString().split("\\s+");
             started = false;
             threadSuspended = true;
@@ -425,6 +425,7 @@ public class RsvpActivity extends AppCompatActivity {
                 }
                 return true;
             case R.id.rsvp:
+
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", counter);
@@ -432,10 +433,13 @@ public class RsvpActivity extends AppCompatActivity {
                 editor.putInt("rsvpSpeed",wpm);
                 editor.commit();
                 Intent m_rsvp = new Intent(this, RsvpActivity.class);
+                m_rsvp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(m_rsvp);
                 finish();
                 return true;
             case R.id.pager_m:
+
+
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", counter);
@@ -443,10 +447,13 @@ public class RsvpActivity extends AppCompatActivity {
                 editor.putInt("rsvpSpeed",wpm);
                 editor.commit();
                 Intent pagerm = new Intent(this, PagerActivity.class);
+                pagerm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(pagerm);
                 finish();
                 return true;
             case R.id.scroller:
+
+
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", counter);
@@ -454,7 +461,120 @@ public class RsvpActivity extends AppCompatActivity {
                 editor.putInt("rsvpSpeed",wpm);
                 editor.commit();
                 Intent scrollm = new Intent(this, ScrollActivity.class);
+                scrollm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(scrollm);
+                finish();
+                return true;
+
+            case R.id.books_1:
+
+                editor = prefs.edit();
+                editor.putString("book","Ambush_at_Corellia_by_Macbride_Roger_Allen.epub");
+                editor.putInt("chapter", 2);
+                editor.putInt("location", 0);
+                editor.putInt("fontsize", textsize);
+                editor.putInt("rsvpSpeed",wpm);
+                editor.commit();
+                m_rsvp = new Intent(this, RsvpActivity.class);
+                m_rsvp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(m_rsvp);
+                finish();
+                return true;
+
+            case R.id.books_2:
+                editor = prefs.edit();
+                editor.putString("book","Assault_at_Selonia_by_Roger_Allen_MacBride.epub");
+                editor.putInt("chapter", 2);
+                editor.putInt("location", 0);
+                editor.putInt("fontsize", textsize);
+                editor.putInt("rsvpSpeed",wpm);
+                editor.commit();
+                m_rsvp = new Intent(this, RsvpActivity.class);
+                m_rsvp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(m_rsvp);
+                finish();
+                return true;
+
+            case R.id.books_3:
+                editor = prefs.edit();
+                editor.putString("book","Before_the_Storm_by_P_Michael_Kube-McDowell.epub");
+                editor.putInt("chapter", 1);
+                editor.putInt("location", 0);
+                editor.putInt("fontsize", textsize);
+                editor.putInt("rsvpSpeed",wpm);
+                editor.commit();
+                m_rsvp = new Intent(this, RsvpActivity.class);
+                m_rsvp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(m_rsvp);
+                finish();
+                return true;
+
+            case R.id.books_4:
+                editor = prefs.edit();
+                editor.putString("book","False_Colors_(Masterpiece_in_Murder)_by_Richard_Powell.epub");
+                editor.putInt("chapter", 2);
+                editor.putInt("location", 0);
+                editor.putInt("fontsize", textsize);
+                editor.putInt("rsvpSpeed",wpm);
+                editor.commit();
+                m_rsvp = new Intent(this, RsvpActivity.class);
+                m_rsvp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(m_rsvp);
+                finish();
+                return true;
+
+            case R.id.books_5:
+                editor = prefs.edit();
+                editor.putString("book","Richard_Powell_-_Pioneer_Go_Home.epub");
+                editor.putInt("chapter", 2);
+                editor.putInt("location", 0);
+                editor.putInt("fontsize", textsize);
+                editor.putInt("rsvpSpeed",wpm);
+                editor.commit();
+                m_rsvp = new Intent(this, RsvpActivity.class);
+                m_rsvp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(m_rsvp);
+                finish();
+                return true;
+
+            case R.id.books_6:
+                editor = prefs.edit();
+                editor.putString("book","Shield_of_Lies_by_P_Michael_Kube-McDowell.epub");
+                editor.putInt("chapter", 2);
+                editor.putInt("location", 0);
+                editor.putInt("fontsize", textsize);
+                editor.putInt("rsvpSpeed",wpm);
+                editor.commit();
+                m_rsvp = new Intent(this, RsvpActivity.class);
+                m_rsvp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(m_rsvp);
+                finish();
+                return true;
+
+            case R.id.books_7:
+                editor = prefs.edit();
+                editor.putString("book","Showdown_at_Centerpoint_by_Macbride_Roger_Allen.epub");
+                editor.putInt("chapter", 2);
+                editor.putInt("location", 0);
+                editor.putInt("fontsize", textsize);
+                editor.putInt("rsvpSpeed",wpm);
+                editor.commit();
+                m_rsvp = new Intent(this, RsvpActivity.class);
+                m_rsvp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(m_rsvp);
+                finish();
+                return true;
+            case R.id.books_8:
+                editor = prefs.edit();
+                editor.putString("book","Tyrant's_Test_by_P_Michael_Kube-McDowell.epub");
+                editor.putInt("chapter", 2);
+                editor.putInt("location", 0);
+                editor.putInt("fontsize", textsize);
+                editor.putInt("rsvpSpeed",wpm);
+                editor.commit();
+                m_rsvp = new Intent(this, RsvpActivity.class);
+                m_rsvp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(m_rsvp);
                 finish();
                 return true;
 

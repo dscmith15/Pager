@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="User_Data">
+    <ListPreference     android:title="Book"
+        android:summary="Select the kind of book that you would like to read"
+        android:key="book"
+        android:defaultValue="Collision_by_Jeff_Abbott.epub"
+        android:entries="@array/Books_List"
+        android:entryValues="@array/ListVals" />
+</PreferenceScreen>

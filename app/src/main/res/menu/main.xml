@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.dustin.pager.MainActivity">
 
-    <group android:checkableBehavior="single">
+    <group>
 
         <item android:id="@+id/hide_button"
             android:title="@string/options_hide_buttons"
@@ -23,6 +23,52 @@
             app:showAsAction="ifRoom"
             />
 
+
+
+
+    </group>
+    <group>
+        <item android:id="@+id/books_1"
+            android:title="Ambush_at_Corellia_by_Macbride_Roger_Allen.epub"
+            app:showAsAction="collapseActionView"
+
+            />
+        <item android:id="@+id/books_2"
+            android:title="Assault_at_Selonia_by_Roger_Allen_MacBride.epub"
+            app:showAsAction="collapseActionView"
+
+            />
+        <item android:id="@+id/books_3"
+            android:title="Before_the_Storm_by_P_Michael_Kube-McDowell.epub"
+            app:showAsAction="collapseActionView"
+
+            />
+        <item android:id="@+id/books_4"
+            android:title="False_Colors_(Masterpiece_in_Murder)_by_Richard_Powell.epub"
+            app:showAsAction="collapseActionView"
+
+            />
+
+        <item android:id="@+id/books_5"
+            android:title="Richard_Powell_-_Pioneer_Go_Home.epub"
+            app:showAsAction="collapseActionView"
+
+            />
+        <item android:id="@+id/books_6"
+            android:title="Shield_of_Lies_by_P_Michael_Kube-McDowell.epub"
+            app:showAsAction="collapseActionView"
+
+            />
+        <item android:id="@+id/books_7"
+            android:title="Showdown_at_Centerpoint_by_Macbride_Roger_Allen.epub"
+            app:showAsAction="collapseActionView"
+
+            />
+        <item android:id="@+id/books_8"
+            android:title="Tyrant's_Test_by_P_Michael_Kube-McDowell.epub"
+            app:showAsAction="collapseActionView"
+
+            />
     </group>
 
 

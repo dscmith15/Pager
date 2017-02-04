@@ -1,20 +1,21 @@
 package com.example.dustin.pager;
 
-import android.app.DialogFragment;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.os.Environment;
-import android.os.Handler;
+
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
+
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -24,7 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.opencsv.CSVReader;
+
 
 
 import java.io.BufferedReader;
@@ -35,11 +36,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
+import java.util.Arrays;
+
 
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.epub.EpubReader;
+
+import static java.lang.Math.round;
 
 public class ScrollActivity extends AppCompatActivity {
 
@@ -47,6 +50,7 @@ public class ScrollActivity extends AppCompatActivity {
     Vibrator vibrator;
     TextView firstTextView;
 
+    public Integer twigs;
     //all of these should be added to all apps
     ImageButton slowdown;
     ImageButton speedup;
@@ -60,53 +64,39 @@ public class ScrollActivity extends AppCompatActivity {
     MenuItem hider;
 
     //timer vars
-    private long starttime;
-    private long endTime;
+
     private boolean started;
 
     private boolean paused = true;
 
+    public String litBranch;
 
-    protected String[] mWordArray;
-    protected boolean mPlayingRequested;
     public String literature;
     public  String[] litSplit;
     public InputStream is = null;
     private int counter = 0;
 
-    public int splitter = 13; // decides how long words can be
     public int textsize = 32;
     public int textchg = 5;
     ScrollTextView scrolltext;
     private Toast toast;
     public boolean hidden = false;
 
-    private int pnum;
     private int mode = -1;
-    private boolean passageflag = false;
-    private String passage;
-    private String[][] orders;
-    private String wpm = "NAN";
+
     private boolean completed = false;
-    private boolean passageswitch = true;
+
     public int lastloc = 2;
     Thread timeNano;
     public String ebook;
 
-
-    //this should help with frame issue
-    private static final int UPDATE_RATE = 30;
-
-
-
-    private int PassageCount=0;
+    public Boolean BranchFlag = false;
+    public Integer BranchCount = 0;
 
     public SharedPreferences prefs;
     public SharedPreferences.Editor editor;
     public static final String PREFS_NAME = "User_Data";
-
-
-
+    public Integer breaker = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,8 +137,13 @@ public class ScrollActivity extends AppCompatActivity {
 
         scrolltext=(ScrollTextView) findViewById(R.id.scrolltext);
         scrolltext.setSelected(true);
+
         loadText(ebook,lastloc);
-        scrolltext.setText(literature);
+        loadMiniText(literature,breaker,BranchCount);
+
+        twigs = stems(literature);
+
+        scrolltext.setText("                           "+litBranch);
         scrolltext.setTextColor(Color.BLACK);
         scrolltext.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
         firstTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
@@ -169,60 +164,76 @@ public class ScrollActivity extends AppCompatActivity {
             @Override
             public void run() {
                 synchronized (this) {
-                    while (true)
+                    while (true) {
+
                         try {
-
-                            long beginTimeMillis, timeTakenMillis, timeLeftMillis;
-
-                            // get the time before updates/draw
-                            beginTimeMillis = System.currentTimeMillis();
-
-                            // do the thread processing / draw
-                            completed=scrolltext.isdone();
-                            if (completed & mode == -2 & passageswitch) {
-                                Thread.sleep(1);
-                                endTime = System.nanoTime() - starttime;
-
-                                passageswitch=false;
-                                passageflag = false;
-                                loadText(ebook,lastloc);
-                                completed = false;
-                                scrolltext.setDone(completed);
-                                passageswitch=true;
-                            }
-                            if (completed & mode == -1){
-                                paused=true;
-
-                                lastloc++;
-                                loadText(ebook,lastloc);
-
-                                completed = false;
-                                scrolltext.setDone(completed);
-                                passageswitch=true;
-                            }
-
-                            // get the time after processing and calculate the difference
-                            timeTakenMillis = System.currentTimeMillis() - beginTimeMillis;
-
-                            // check how long there is until we reach the desired refresh rate
-                            timeLeftMillis = (1000L / UPDATE_RATE) - timeTakenMillis;
-
-                            // set some kind of minimum to prevent spinning
-                            if (timeLeftMillis < 5) {
-                                timeLeftMillis = 5; // Set a minimum
-                            }
-
-                            // sleep until the end of the current frame
-                            try {
-                                TimeUnit.MILLISECONDS.sleep(timeLeftMillis);
-                            } catch (InterruptedException ie) {
-                            }
-
-
-
+                            Thread.sleep(200);
                         } catch (InterruptedException e) {
-                            System.out.println("got interrupted!");
+                            e.printStackTrace();
                         }
+
+                        // do the thread processing / draw
+                        completed = scrolltext.isdone();
+
+                        if (completed & mode == -1 & !BranchFlag) {
+                            paused = true;
+                            counter = 0;
+                            completed = false;
+                            scrolltext.setDone(completed);
+                            BranchCount++;
+                            loadMiniText(literature, breaker, BranchCount);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    scrolltext.setDistance();
+                                    scrolltext.setText("                           "+litBranch);
+                                    scrolltext.resumeScroll();
+                                    player.setVisibility(View.INVISIBLE);
+                                    pauser.setVisibility(View.VISIBLE);
+                                    scrolltext.pauseScroll();
+                                    pauser.setVisibility(View.INVISIBLE);
+                                    player.setVisibility(View.VISIBLE);
+                                    scrolltext.setVisibility(View.INVISIBLE);
+                                    StartScroll(scrolltext);
+
+
+                                }
+                            });
+
+                        } else if (completed & mode == -1 & BranchFlag) {
+                            paused = true;
+                            lastloc++;
+                            BranchCount = 0;
+                            counter = 0;
+                            completed = false;
+                            scrolltext.setDone(completed);
+                            loadText(ebook,lastloc);
+                            loadMiniText(literature, breaker, BranchCount);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    displayText("Next Chapter");
+                                    scrolltext.setDistance();
+                                    scrolltext.setText("                           "+litBranch);
+                                    scrolltext.resumeScroll();
+                                    player.setVisibility(View.INVISIBLE);
+                                    pauser.setVisibility(View.VISIBLE);
+                                    scrolltext.pauseScroll();
+                                    pauser.setVisibility(View.INVISIBLE);
+                                    player.setVisibility(View.VISIBLE);
+                                    scrolltext.setVisibility(View.INVISIBLE);
+                                    firstTextView.setVisibility(View.VISIBLE);
+                                    firstTextView.setText("Chapter Break");
+
+
+                                }
+                            });
+
+
+                        }
+                    }
+
                 }
             }
         });
@@ -230,6 +241,7 @@ public class ScrollActivity extends AppCompatActivity {
 
 
     }
+
 
     private void displayText(final String message) {
 
@@ -240,6 +252,7 @@ public class ScrollActivity extends AppCompatActivity {
     public void NextRSVP(View view) {
         scrolltext.pauseScroll();
         scrolltext.goForward();
+        displayText(Integer.toString(stems(literature)));
 
 
         pauser.setVisibility(View.INVISIBLE);
@@ -305,7 +318,7 @@ public class ScrollActivity extends AppCompatActivity {
             firstTextView.setVisibility(View.INVISIBLE);
             scrolltext.setVisibility(View.VISIBLE);
             started = true;
-            starttime = System.nanoTime();
+
 
         }
 
@@ -359,8 +372,7 @@ public class ScrollActivity extends AppCompatActivity {
             // Load Book from inputStream
             Book book = (new EpubReader()).readEpub(is);
             InputStream was = book.getSpine().getSpineReferences().get(loc).getResource().getInputStream();
-
-            passage=file;
+            BranchFlag = false;
             is.close();
             BufferedReader reader = new BufferedReader(new InputStreamReader(was));
             StringBuilder sb = new StringBuilder();
@@ -372,10 +384,21 @@ public class ScrollActivity extends AppCompatActivity {
             }
             was.close();
             literature = Html.fromHtml(sb.toString()).toString();
-            counter = 0;
+
             litSplit = Html.fromHtml(literature).toString().split("\\s+");
-            scrolltext.setDistance();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    scrolltext.setDistance();
+
+                }
+            });
+
             started = false;
+
+            //literature = TextUtils.join(" ", Arrays.asList(litSplit).subList(0,20));
+
 
 
         } catch (IOException e) {
@@ -385,7 +408,53 @@ public class ScrollActivity extends AppCompatActivity {
 
     }
 
+    private void loadMiniText(final String lit, int loc, int iter) {
 
+        Integer div = trimmer(lit);
+        Integer mod = stems(lit);
+
+        if (loc > div){
+            loc = div;
+        }
+        displayText(Integer.toString(loc));
+        Boolean tempmodflag;
+        if (mod > 0){
+            tempmodflag = true;
+        } else {
+            tempmodflag = false;
+        }
+        if (iter < div) {
+            litBranch = TextUtils.join(" ", Arrays.asList(litSplit).subList(loc * iter, loc * iter + loc));
+
+        } else if (!tempmodflag && iter == div) {
+            litBranch = TextUtils.join(" ", Arrays.asList(litSplit).subList(loc * iter, loc * iter + loc));
+            BranchFlag = true;
+
+        } else if (tempmodflag && iter == div){
+            litBranch = TextUtils.join(" ", Arrays.asList(litSplit).subList(loc * iter, loc * iter + loc));
+
+        } else if (tempmodflag && iter == (div + 1)){
+            litBranch = TextUtils.join(" ", Arrays.asList(litSplit).subList(loc * iter, loc * iter + mod));
+
+            BranchFlag = true;
+        }
+        started = false;
+
+    }
+
+
+
+    public Integer trimmer(final String lit){
+
+        return Math.round(((float) lit.split("\\s+").length)/20);
+
+    }
+
+    public Integer stems(final String lit){
+
+        return lit.split("\\s+").length%20;
+
+    }
 
 
 
@@ -419,48 +488,159 @@ public class ScrollActivity extends AppCompatActivity {
                 return true;
 
             case R.id.rsvp:
+
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", counter);
                 editor.putInt("fontsize", textsize);
                 editor.commit();
                 Intent m_rsvp = new Intent(this, RsvpActivity.class);
+                m_rsvp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(m_rsvp);
                 finish();
                 return true;
             case R.id.pager_m:
+
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", counter);
                 editor.putInt("fontsize", textsize);
                 editor.commit();
                 Intent pagerm = new Intent(this, PagerActivity.class);
+                pagerm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(pagerm);
                 finish();
                 return true;
             case R.id.scroller:
+
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", counter);
                 editor.putInt("fontsize", textsize);
                 editor.commit();
                 Intent scrollm = new Intent(this, ScrollActivity.class);
+                scrollm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(scrollm);
                 finish();
                 return true;
 
+
+            case R.id.books_1:
+                editor = prefs.edit();
+                editor.putString("book","Ambush_at_Corellia_by_Macbride_Roger_Allen.epub");
+                editor.putInt("chapter", 2);
+                editor.putInt("location", 0);
+                editor.putInt("fontsize", textsize);
+
+                editor.commit();
+                scrollm = new Intent(this, ScrollActivity.class);
+                scrollm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(scrollm);
+                finish();
+                return true;
+
+            case R.id.books_2:
+                editor = prefs.edit();
+                editor.putString("book","Assault_at_Selonia_by_Roger_Allen_MacBride.epub");
+                editor.putInt("chapter", 2);
+                editor.putInt("location", 0);
+                editor.putInt("fontsize", textsize);
+
+                editor.commit();
+                scrollm = new Intent(this, ScrollActivity.class);
+                scrollm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(scrollm);
+                finish();
+                return true;
+
+            case R.id.books_3:
+                editor = prefs.edit();
+                editor.putString("book","Before_the_Storm_by_P_Michael_Kube-McDowell.epub");
+                editor.putInt("chapter", 1);
+                editor.putInt("location", 0);
+                editor.putInt("fontsize", textsize);
+
+                editor.commit();
+                scrollm = new Intent(this, ScrollActivity.class);
+                scrollm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(scrollm);
+                finish();
+                return true;
+
+            case R.id.books_4:
+                editor = prefs.edit();
+                editor.putString("book","False_Colors_(Masterpiece_in_Murder)_by_Richard_Powell.epub");
+                editor.putInt("chapter", 2);
+                editor.putInt("location", 0);
+                editor.putInt("fontsize", textsize);
+
+                editor.commit();
+                scrollm = new Intent(this, ScrollActivity.class);
+                scrollm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(scrollm);
+                finish();
+                return true;
+
+            case R.id.books_5:
+                editor = prefs.edit();
+                editor.putString("book","Richard_Powell_-_Pioneer_Go_Home.epub");
+                editor.putInt("chapter", 2);
+                editor.putInt("location", 0);
+                editor.putInt("fontsize", textsize);
+
+                editor.commit();
+                scrollm = new Intent(this, ScrollActivity.class);
+                scrollm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(scrollm);
+                finish();
+                return true;
+
+            case R.id.books_6:
+                editor = prefs.edit();
+                editor.putString("book","Shield_of_Lies_by_P_Michael_Kube-McDowell.epub");
+                editor.putInt("chapter", 2);
+                editor.putInt("location", 0);
+                editor.putInt("fontsize", textsize);
+
+                editor.commit();
+                scrollm = new Intent(this, ScrollActivity.class);
+                scrollm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(scrollm);
+                finish();
+                return true;
+
+            case R.id.books_7:
+                editor = prefs.edit();
+                editor.putString("book","Showdown_at_Centerpoint_by_Macbride_Roger_Allen.epub");
+                editor.putInt("chapter", 2);
+                editor.putInt("location", 0);
+                editor.putInt("fontsize", textsize);
+
+                editor.commit();
+                scrollm = new Intent(this, ScrollActivity.class);
+                scrollm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(scrollm);
+                finish();
+                return true;
+            case R.id.books_8:
+                editor = prefs.edit();
+                editor.putString("book","Tyrant's_Test_by_P_Michael_Kube-McDowell.epub");
+                editor.putInt("chapter", 2);
+                editor.putInt("location", 0);
+                editor.putInt("fontsize", textsize);
+
+                editor.commit();
+                scrollm = new Intent(this, ScrollActivity.class);
+                scrollm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(scrollm);
+                finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
 
 
     }
-
-
-
-
-
-
 
     public File getDataStorageDir(String DataName) {
         // Get the directory for the user's public pictures directory.

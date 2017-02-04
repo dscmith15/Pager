@@ -51,6 +51,20 @@
         <item>2</item>
         <item>3</item>
     </string-array>
+    <string-array name="Books_List">
+        <item>Collision_by_Jeff_Abbott.epub</item>
+        <item>Do_Unto_Others_by_Jeff_Abbott.epub</item>
+        <item>Promises_of_Home_by_Jeff_Abbott.epub</item>
+        <item>Richard_Powell_-_Pioneer_Go_Home.epub</item>
+        <item>Try_Fear_by_Scott_James_Bell.epub</item>
+    </string-array>
+    <string-array name="ListVals">
+        <item>Collision_by_Jeff_Abbott.epub</item>
+        <item>Do_Unto_Others_by_Jeff_Abbott.epub</item>
+        <item>Promises_of_Home_by_Jeff_Abbott.epub</item>
+        <item>Richard_Powell_-_Pioneer_Go_Home.epub</item>
+        <item>Try_Fear_by_Scott_James_Bell.epub</item>
+    </string-array>
 
 
 </resources>
