@@ -117,4 +117,7 @@
     <string name="Books">Books</string>
     <string name="Bookdiag">Books</string>
     <string name="defaultbook">1</string>
+    <string name="book_title1">Ambush_at_Corellia_by_Macbride_Roger_Allen.epub</string>
+    <string name="book_title2">Assault_at_Selonia_by_Roger_Allen_MacBride.epub</string>
+    <string name="book_title3">Before_the_Storm_by_P_Michael_Kube-McDowell.epub</string>
 </resources>
