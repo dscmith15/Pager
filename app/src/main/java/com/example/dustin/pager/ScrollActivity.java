@@ -96,16 +96,26 @@ public class ScrollActivity extends AppCompatActivity {
     public SharedPreferences prefs;
     public SharedPreferences.Editor editor;
     public static final String PREFS_NAME = "User_Data";
-    public Integer breaker = 2000;
+    public Integer breaker = 10000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+
         textsize = prefs.getInt("fontsize", 32);
         lastloc =  prefs.getInt("chapter", 2);
         counter = prefs.getInt("location", 0);
-        ebook = prefs.getString("book","AIWL.epub");
+        ebook = prefs.getString("book",getString(R.string.book_title1));
+
+
+        editor = prefs.edit();
+        //rsvp = 1
+        //pager = 2
+        //scroll = 3
+        // na = 4
+        editor.putInt("read_mode", 3);
+        editor.commit();
 
         setContentView(R.layout.activity_scroll);
         firstTextView = (TextView) findViewById(R.id.word_landing);
@@ -413,7 +423,7 @@ public class ScrollActivity extends AppCompatActivity {
         Integer div = trimmer(lit);
         Integer mod = stems(lit);
 
-        if (loc > div){
+        if (loc > div) {
             loc = div;
             BranchFlag = true;
         }

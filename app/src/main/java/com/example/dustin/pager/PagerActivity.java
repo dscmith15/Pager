@@ -98,7 +98,15 @@ public class PagerActivity extends AppCompatActivity {
         textsize = prefs.getInt("fontsize", 32);
         lastloc =  prefs.getInt("chapter", 2);
         mCurrentIndex = prefs.getInt("location", 0);
-        ebook = prefs.getString("book","AIWL.epub");
+        ebook = prefs.getString("book",getString(R.string.book_title1));
+
+        editor = prefs.edit();
+        //rsvp = 1
+        //pager = 2
+        //scroll = 3
+        // na = 4
+        editor.putInt("read_mode", 2);
+        editor.commit();
 
 
         setContentView(R.layout.activity_pager);
@@ -173,6 +181,7 @@ public class PagerActivity extends AppCompatActivity {
                         lastloc++;
                         displayText("next chapter");
                         loadText(ebook, lastloc);
+                        mCurrentIndex = 0;
 
                         prepView();
                         passageflag = false;

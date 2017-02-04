@@ -104,7 +104,15 @@ public class RsvpActivity extends AppCompatActivity {
         lastloc =  prefs.getInt("chapter", 2);
         counter = prefs.getInt("location", 0);
         wpm = prefs.getInt("rsvpSpeed", 250);
-        ebook = prefs.getString("book","AIWL.epub");
+        ebook = prefs.getString("book",getString(R.string.book_title1));
+
+        editor = prefs.edit();
+        //rsvp = 1
+        //pager = 2
+        //scroll = 3
+        // na = 4
+        editor.putInt("read_mode", 1);
+        editor.commit();
 
         setContentView(R.layout.activity_mrsvp);
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -161,34 +169,26 @@ public class RsvpActivity extends AppCompatActivity {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        if (counter<litSplit.length&!passageflag) {
+
+                                        if (counter<litSplit.length) {
 
                                             firstTextView.setText(litSplit[counter]);
-                                            counter=counter+1;
+                                            counter++;
                                             mDelay=(long)((60000*delayValue()) / wpm);
 
                                         }
                                         if (counter==litSplit.length){
-                                            passageflag=true;
                                             lastloc++;
-                                            displayText("next chapter");
+                                            counter = 0;
+                                            firstTextView.setText("Chapter Break");
                                             loadText(ebook, lastloc);
-
-
-
-                                        }
-                                        if (passageflag){
-                                            endTime = System.nanoTime()-starttime;
-
                                             threadSuspended = true;
-                                            v.vibrate(1000);
                                             pauser.setVisibility(View.INVISIBLE);
                                             player.setVisibility(View.VISIBLE);
-                                            passageflag = false;
-                                            String pdata = "data.txt";
-                                            writeStringToTextFile(Integer.toString(pnum)+"\t"+"Spritz"+"\t"+passage+"\t"+Long.toString(endTime)+"\t"+Integer.toString(wpm)+"\t"+Integer.toString(textsize)+"\t"+Long.toString(litSplit.length)+"\n", pdata);
-                                            counter++;
+
+
                                         }
+
                                     }
                                 });
 

@@ -117,7 +117,7 @@
     <string name="Books">Books</string>
     <string name="Bookdiag">Books</string>
     <string name="defaultbook">1</string>
-    <string name="book_title1">Ambush_at_Corellia_by_Macbride_Roger_Allen.epub</string>
-    <string name="book_title2">Assault_at_Selonia_by_Roger_Allen_MacBride.epub</string>
-    <string name="book_title3">Before_the_Storm_by_P_Michael_Kube-McDowell.epub</string>
+    <string name="book_title1">[Agatha_Christie]_And_Then_There_Were_None(BookFi).epub</string>
+    <string name="book_title2">[Alexander_McCall_Smith]_The_No.1_Ladies_Detectiv(BookFi).epub</string>
+    <string name="book_title3">[Clark_Mary_Higgins]_You_Belong_to_Me(BookFi).epub</string>
 </resources>

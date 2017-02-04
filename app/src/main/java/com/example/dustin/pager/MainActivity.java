@@ -76,8 +76,15 @@ public class MainActivity extends AppCompatActivity {
 
         UserHistory = prefs.getBoolean("userhist",false);
 
+        //rsvp = 1
+        //pager = 2
+        //scroll = 3
+        // na = 4
+        int reading_mode = prefs.getInt("read_mode", 4);
+
         if (!UserHistory) {
             editor.putBoolean("userhist", true);
+            editor.putInt("read_mode", 4);
             editor.putInt("chapter", 2);
             editor.putInt("location", 0);
             editor.putInt("fontsize", 32);
@@ -85,7 +92,29 @@ public class MainActivity extends AppCompatActivity {
             editor.putInt("scrollSpeed", 200);
             editor.putString("book", getString(R.string.book_title1));
             editor.commit();
+        } else {
+            if (reading_mode == 1){ // this is RSVP
+                Intent m_rsvp = new Intent(this, RsvpActivity.class);
+                m_rsvp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(m_rsvp);
+                finish();
+            }
+            if (reading_mode == 2){ // this is
+                Intent pagerm = new Intent(this, PagerActivity.class);
+                pagerm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(pagerm);
+                finish();
+
+            }
+            if (reading_mode == 3){ // This is Scroll
+                Intent scrollm = new Intent(this, ScrollActivity.class);
+                scrollm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(scrollm);
+                finish();
+
+            }
         }
+
 
 
 
@@ -99,17 +128,20 @@ public class MainActivity extends AppCompatActivity {
 
     public void pickPager(View view){
         Intent pagerm = new Intent(this, PagerActivity.class);
+        pagerm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(pagerm);
         finish();
 
     }
     public void pickScroll(View view){
         Intent scrollm = new Intent(this, ScrollActivity.class);
+        scrollm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(scrollm);
         finish();
     }
     public void pickRSVP(View view){
         Intent m_rsvp = new Intent(this, RsvpActivity.class);
+        m_rsvp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(m_rsvp);
         finish();
 
@@ -153,16 +185,19 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.rsvp:
                 Intent m_rsvp = new Intent(this, RsvpActivity.class);
+                m_rsvp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(m_rsvp);
                 finish();
                 return true;
             case R.id.pager_m:
                 Intent pagerm = new Intent(this, PagerActivity.class);
+                pagerm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(pagerm);
                 finish();
                 return true;
             case R.id.scroller:
                 Intent scrollm = new Intent(this, ScrollActivity.class);
+                scrollm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(scrollm);
                 finish();
                 return true;
