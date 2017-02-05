@@ -8,10 +8,12 @@ import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.os.Environment;
 
+import android.os.Message;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -35,8 +37,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.util.Arrays;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 
 import nl.siegmann.epublib.domain.Book;
@@ -96,7 +101,8 @@ public class ScrollActivity extends AppCompatActivity {
     public SharedPreferences prefs;
     public SharedPreferences.Editor editor;
     public static final String PREFS_NAME = "User_Data";
-    public Integer breaker = 10000;
+    public Integer breaker = 10;
+    public String[] litsplit_sent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,12 +154,12 @@ public class ScrollActivity extends AppCompatActivity {
         scrolltext=(ScrollTextView) findViewById(R.id.scrolltext);
         scrolltext.setSelected(true);
 
-        loadText(ebook,lastloc);
+        loadText(ebook,lastloc+1);
         loadMiniText(literature,breaker,BranchCount);
 
         twigs = stems(literature);
 
-        scrolltext.setText("                           "+litBranch);
+        scrolltext.setText("                           "+litBranch+".");
         scrolltext.setTextColor(Color.BLACK);
         scrolltext.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
         firstTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
@@ -177,7 +183,7 @@ public class ScrollActivity extends AppCompatActivity {
                     while (true) {
 
                         try {
-                            Thread.sleep(200);
+                            Thread.sleep(100);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -197,7 +203,7 @@ public class ScrollActivity extends AppCompatActivity {
                                 public void run() {
 
                                     scrolltext.setDistance();
-                                    scrolltext.setText("                           "+litBranch);
+                                    scrolltext.setText("                           "+litBranch+".");
                                     scrolltext.resumeScroll();
                                     player.setVisibility(View.INVISIBLE);
                                     pauser.setVisibility(View.VISIBLE);
@@ -225,7 +231,7 @@ public class ScrollActivity extends AppCompatActivity {
                                 public void run() {
                                     displayText("Next Chapter");
                                     scrolltext.setDistance();
-                                    scrolltext.setText("                           "+litBranch);
+                                    scrolltext.setText("                           "+litBranch+".");
                                     scrolltext.resumeScroll();
                                     player.setVisibility(View.INVISIBLE);
                                     pauser.setVisibility(View.VISIBLE);
@@ -396,6 +402,9 @@ public class ScrollActivity extends AppCompatActivity {
             literature = Html.fromHtml(sb.toString()).toString();
 
             litSplit = Html.fromHtml(literature).toString().split("\\s+");
+
+            litsplit_sent = Html.fromHtml(literature).toString().split("(?<=[a-z])\\.\\s+");
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -428,7 +437,7 @@ public class ScrollActivity extends AppCompatActivity {
             BranchFlag = true;
         }
 
-        displayText(Integer.toString(loc));
+
         Boolean tempmodflag;
         if (mod > 0){
             tempmodflag = true;
@@ -436,17 +445,17 @@ public class ScrollActivity extends AppCompatActivity {
             tempmodflag = false;
         }
         if (iter < div) {
-            litBranch = TextUtils.join(" ", Arrays.asList(litSplit).subList(loc * iter, loc * iter + loc));
+            litBranch = TextUtils.join(". ", Arrays.asList(litsplit_sent).subList(loc * iter, loc * iter + loc));
 
         } else if (!tempmodflag && iter == div) {
-            litBranch = TextUtils.join(" ", Arrays.asList(litSplit).subList(loc * iter, loc * iter + loc));
+            litBranch = TextUtils.join(". ", Arrays.asList(litsplit_sent).subList(loc * iter, loc * iter + loc));
             BranchFlag = true;
 
         } else if (tempmodflag && iter == div){
-            litBranch = TextUtils.join(" ", Arrays.asList(litSplit).subList(loc * iter, loc * iter + loc));
+            litBranch = TextUtils.join(". ", Arrays.asList(litsplit_sent).subList(loc * iter, loc * iter + loc));
 
         } else if (tempmodflag && iter == (div + 1)){
-            litBranch = TextUtils.join(" ", Arrays.asList(litSplit).subList(loc * iter, loc * iter + mod));
+            litBranch = TextUtils.join(". ", Arrays.asList(litsplit_sent).subList(loc * iter, loc * iter + mod));
 
             BranchFlag = true;
         }
@@ -456,15 +465,16 @@ public class ScrollActivity extends AppCompatActivity {
 
 
 
+
     public Integer trimmer(final String lit){
 
-        return Math.round(((float) lit.split("\\s+").length)/20);
+        return Math.round(((float) lit.split("(?<=[a-z])\\.\\s+").length)/20);
 
     }
 
     public Integer stems(final String lit){
 
-        return lit.split("\\s+").length%20;
+        return lit.split("(?<=[a-z])\\.\\s+").length%20;
 
     }
 
@@ -483,15 +493,15 @@ public class ScrollActivity extends AppCompatActivity {
             case R.id.hide_button:
 
                 if (hidden == false) {
-
-
+                    slowdown.setVisibility(View.INVISIBLE);
+                    speedup.setVisibility(View.INVISIBLE);
                     inctexsize.setVisibility(View.INVISIBLE);
                     dectexsize.setVisibility(View.INVISIBLE);
                     hidden = true;
 
                 } else {
-
-
+                    slowdown.setVisibility(View.VISIBLE);
+                    speedup.setVisibility(View.VISIBLE);
                     inctexsize.setVisibility(View.VISIBLE);
                     dectexsize.setVisibility(View.VISIBLE);
                     hidden = false;
@@ -500,7 +510,7 @@ public class ScrollActivity extends AppCompatActivity {
                 return true;
 
             case R.id.rsvp:
-
+                counter = scrolltext.getDistance()/scrolltext.getWidth();
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", counter);
@@ -512,7 +522,7 @@ public class ScrollActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.pager_m:
-
+                counter = scrolltext.getDistance()/scrolltext.getWidth();
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", counter);
@@ -524,7 +534,7 @@ public class ScrollActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.scroller:
-
+                counter = scrolltext.getDistance()/scrolltext.getWidth();
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", counter);
