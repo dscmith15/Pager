@@ -179,7 +179,7 @@ public class PagerActivity extends AppCompatActivity {
                         //passageflag is used to know if the passage is over
                         passageflag = true;
                         lastloc++;
-                        displayText("next chapter");
+
                         loadText(ebook, lastloc);
                         mCurrentIndex = 0;
 
@@ -325,7 +325,7 @@ public class PagerActivity extends AppCompatActivity {
                 return true;
 
             case R.id.rsvp:
-
+                mCurrentIndex = mCurrentIndex/mPagination.size();
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", mCurrentIndex);
@@ -337,7 +337,7 @@ public class PagerActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.pager_m:
-
+                mCurrentIndex = mCurrentIndex/mPagination.size();
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", mCurrentIndex);
@@ -349,7 +349,7 @@ public class PagerActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.scroller:
-
+                mCurrentIndex = mCurrentIndex/mPagination.size();
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", mCurrentIndex);

@@ -141,8 +141,6 @@ public class RsvpActivity extends AppCompatActivity {
         mDelay= 60000/wpm;
 
 
-        displayText(Integer.toString(wpm));
-
         loadText(ebook,lastloc);
 
 
@@ -180,11 +178,8 @@ public class RsvpActivity extends AppCompatActivity {
                                         if (counter==litSplit.length){
                                             lastloc++;
                                             counter = 0;
-                                            firstTextView.setText("Chapter Break");
                                             loadText(ebook, lastloc);
-                                            threadSuspended = true;
-                                            pauser.setVisibility(View.INVISIBLE);
-                                            player.setVisibility(View.VISIBLE);
+                                            firstTextView.setText("Chapter Break");
 
 
                                         }
@@ -409,15 +404,15 @@ public class RsvpActivity extends AppCompatActivity {
             case R.id.hide_button:
 
                 if (hidden == false) {
-
-
+                    slowdown.setVisibility(View.INVISIBLE);
+                    speedup.setVisibility(View.INVISIBLE);
                     inctexsize.setVisibility(View.INVISIBLE);
                     dectexsize.setVisibility(View.INVISIBLE);
                     hidden = true;
 
                 } else {
-
-
+                    slowdown.setVisibility(View.VISIBLE);
+                    speedup.setVisibility(View.VISIBLE);
                     inctexsize.setVisibility(View.VISIBLE);
                     dectexsize.setVisibility(View.VISIBLE);
                     hidden = false;
@@ -425,7 +420,7 @@ public class RsvpActivity extends AppCompatActivity {
                 }
                 return true;
             case R.id.rsvp:
-
+                counter = counter/litSplit.length;
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", counter);
@@ -438,8 +433,7 @@ public class RsvpActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.pager_m:
-
-
+                counter = counter/litSplit.length;
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", counter);
@@ -452,8 +446,7 @@ public class RsvpActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.scroller:
-
-
+                counter = counter/litSplit.length;
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", counter);

@@ -117,7 +117,7 @@
     <string name="Books">Books</string>
     <string name="Bookdiag">Books</string>
     <string name="defaultbook">1</string>
-    <string name="book_title1">[Agatha_Christie]_And_Then_There_Were_None(BookFi).epub</string>
-    <string name="book_title2">[Alexander_McCall_Smith]_The_No.1_Ladies_Detectiv(BookFi).epub</string>
-    <string name="book_title3">[Clark_Mary_Higgins]_You_Belong_to_Me(BookFi).epub</string>
+    <string name="book_title1">Asimov complete series.epub</string>
+    <string name="book_title2">Complete_Robot_by_Isaac_Asimov.epub</string>
+    <string name="book_title3">Stranger_in_a_Strange_Land_by_A_Robert_Heinlein.epub</string>
 </resources>

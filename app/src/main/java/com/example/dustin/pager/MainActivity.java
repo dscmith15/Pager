@@ -163,26 +163,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         //Deals with the actual clicking
         switch (item.getItemId()) {
-
-            case R.id.hide_button:
-
-                if (hidden == false) {
-
-
-                    inctexsize.setVisibility(View.INVISIBLE);
-                    dectexsize.setVisibility(View.INVISIBLE);
-                    hidden = true;
-
-                } else {
-
-
-                    inctexsize.setVisibility(View.VISIBLE);
-                    dectexsize.setVisibility(View.VISIBLE);
-                    hidden = false;
-
-                }
-                return true;
-
+            
             case R.id.rsvp:
                 Intent m_rsvp = new Intent(this, RsvpActivity.class);
                 m_rsvp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

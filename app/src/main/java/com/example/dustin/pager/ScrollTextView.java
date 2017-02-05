@@ -18,7 +18,7 @@ public class ScrollTextView extends TextView {
     private Scroller mSlr;
 
     // milliseconds for a round of scrolling
-    private int mRndDuration = 1000000000;
+    private int mRndDuration = 100;
 
     // the X offset when paused
     public int mXPaused = 0;
@@ -95,21 +95,19 @@ public class ScrollTextView extends TextView {
 
         // Do not know why it would not scroll sometimes
         // if setHorizontallyScrolling is called in constructor.
-        setHorizontallyScrolling(true);
+        //setHorizontallyScrolling(true);
+        setSingleLine();
 
         // use LinearInterpolator for steady scrolling
         mSlr = new Scroller(this.getContext(), new LinearInterpolator());
 
-
-        //TODO text is blurry when going faster
         setScroller(mSlr);
 
         int scrollingLen = calculateScrollingLen();
         distance = scrollingLen - (getWidth() + mXPaused);
-        //int duration = (new Double(mRndDuration * distance * 1.00000
-        // mScrollSpeed)).intValue();
 
-        int duration = (new Double(1000f * distance / mScrollSpeed)).intValue();
+        int duration = (Double.valueOf(1000f * distance / mScrollSpeed)).intValue();
+
         setVisibility(VISIBLE);
         mSlr.startScroll(mXPaused, 0, distance, 0, duration);
         invalidate();
@@ -192,8 +190,6 @@ public class ScrollTextView extends TextView {
      */
     public void computeScroll() {
         super.computeScroll();
-
-        if (null == mSlr) return;
 
         if (mSlr.isFinished() && (!mPaused)) {
             this.pauseScroll();
