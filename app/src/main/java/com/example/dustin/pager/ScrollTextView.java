@@ -5,20 +5,18 @@ import android.graphics.Rect;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.animation.LinearInterpolator;
+import android.widget.RelativeLayout;
 import android.widget.Scroller;
 import android.widget.TextView;
 
-/**
- * Created by Dustin on 3/28/2016.
- * updated on 1/1/2017
- */
+
 public class ScrollTextView extends TextView {
 
     // scrolling feature
     private Scroller mSlr;
 
     // milliseconds for a round of scrolling
-    private int mRndDuration = 100;
+    private int mRndDuration = 50000;
 
     // the X offset when paused
     public int mXPaused = 0;
@@ -34,6 +32,7 @@ public class ScrollTextView extends TextView {
     private float mSpeedIter = 50f;
 
     public boolean completed = false;
+    public boolean eighty = false;
 
     private int distance;
 
@@ -47,6 +46,7 @@ public class ScrollTextView extends TextView {
         // customize the TextView
         setSingleLine();
         setEllipsize(null);
+        setHorizontallyScrolling(true);
         setVisibility(INVISIBLE);
     }
 
@@ -58,6 +58,7 @@ public class ScrollTextView extends TextView {
         // customize the TextView
         setSingleLine();
         setEllipsize(null);
+        setHorizontallyScrolling(true);
         setVisibility(INVISIBLE);
     }
 
@@ -70,6 +71,7 @@ public class ScrollTextView extends TextView {
         // customize the TextView
         setSingleLine();
         setEllipsize(null);
+        setHorizontallyScrolling(true);
         setVisibility(INVISIBLE);
     }
 
@@ -95,13 +97,13 @@ public class ScrollTextView extends TextView {
 
         // Do not know why it would not scroll sometimes
         // if setHorizontallyScrolling is called in constructor.
-        //setHorizontallyScrolling(true);
-        setSingleLine();
+        setHorizontallyScrolling(true);
 
         // use LinearInterpolator for steady scrolling
         mSlr = new Scroller(this.getContext(), new LinearInterpolator());
 
         setScroller(mSlr);
+
 
         int scrollingLen = calculateScrollingLen();
         distance = scrollingLen - (getWidth() + mXPaused);
@@ -120,13 +122,15 @@ public class ScrollTextView extends TextView {
      * @return the scrolling length in pixels
      */
     private int calculateScrollingLen() {
-        TextPaint tp = getPaint();
-        Rect rect = new Rect();
-        String strTxt = getText().toString();
-        tp.getTextBounds(strTxt, 0, strTxt.length(), rect);
+            TextPaint tp = getPaint();
+
+            Rect rect = new Rect();
+            CharSequence strTxt = getText();
+            tp.getTextBounds(strTxt.toString(), 0, strTxt.length(), rect);
+
         int scrollingLen = rect.width() + getWidth();
-        rect = null;
-        return scrollingLen;
+            rect = null;
+            return scrollingLen;
     }
 
     /**
@@ -162,6 +166,10 @@ public class ScrollTextView extends TextView {
 
 
     }
+
+
+
+
     public void goForward(){
 
         mXPaused += mMovementIter;
@@ -202,6 +210,8 @@ public class ScrollTextView extends TextView {
     }
 
 
+
+
     public void setDistance(){
         mXPaused = -1 * getWidth();
         mPaused = true;
@@ -216,6 +226,7 @@ public class ScrollTextView extends TextView {
     public void setDone(boolean set){
         completed = set;
     }
+
 
     public float getmScrollSpeed(){
         return mScrollSpeed;
@@ -232,4 +243,5 @@ public class ScrollTextView extends TextView {
     public boolean isPaused() {
         return mPaused;
     }
+
 }

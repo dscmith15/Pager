@@ -15,11 +15,13 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.util.TypedValue;
 
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 
@@ -69,7 +71,6 @@ public class ScrollActivity extends AppCompatActivity {
     MenuItem hider;
 
     //timer vars
-
     private boolean started;
 
     private boolean paused = true;
@@ -84,6 +85,7 @@ public class ScrollActivity extends AppCompatActivity {
     public int textsize = 32;
     public int textchg = 5;
     ScrollTextView scrolltext;
+
     private Toast toast;
     public boolean hidden = false;
 
@@ -101,7 +103,7 @@ public class ScrollActivity extends AppCompatActivity {
     public SharedPreferences prefs;
     public SharedPreferences.Editor editor;
     public static final String PREFS_NAME = "User_Data";
-    public Integer breaker = 10;
+    public Integer breaker = 5;
     public String[] litsplit_sent;
 
     @Override
@@ -155,11 +157,10 @@ public class ScrollActivity extends AppCompatActivity {
         scrolltext.setSelected(true);
 
         loadText(ebook,lastloc+1);
-        loadMiniText(literature,breaker,BranchCount);
+        loadMiniText(litsplit_sent,breaker,BranchCount);
 
-        twigs = stems(literature);
 
-        scrolltext.setText("                           "+litBranch+".");
+        scrolltext.setText("                                                             "+litBranch);
         scrolltext.setTextColor(Color.BLACK);
         scrolltext.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
         firstTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
@@ -197,21 +198,32 @@ public class ScrollActivity extends AppCompatActivity {
                             completed = false;
                             scrolltext.setDone(completed);
                             BranchCount++;
-                            loadMiniText(literature, breaker, BranchCount);
+                            loadMiniText(litsplit_sent, breaker, BranchCount);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-
-                                    scrolltext.setDistance();
-                                    scrolltext.setText("                           "+litBranch+".");
-                                    scrolltext.resumeScroll();
+                                    scrolltext.pauseScroll();
                                     player.setVisibility(View.INVISIBLE);
                                     pauser.setVisibility(View.VISIBLE);
+                                    pauser.setVisibility(View.INVISIBLE);
+                                    player.setVisibility(View.VISIBLE);
+                                }
+                            });
+                            while(paused){
+                                paused = scrolltext.isPaused();
+                            }
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
                                     scrolltext.pauseScroll();
+                                    scrolltext.setDistance();
+                                    scrolltext.setText("                                                             " + litBranch);
+                                    player.setVisibility(View.INVISIBLE);
+                                    pauser.setVisibility(View.VISIBLE);
                                     pauser.setVisibility(View.INVISIBLE);
                                     player.setVisibility(View.VISIBLE);
                                     scrolltext.setVisibility(View.INVISIBLE);
-                                    StartScroll(scrolltext);
+                                    scrolltext.resumeScroll();
 
 
                                 }
@@ -225,13 +237,13 @@ public class ScrollActivity extends AppCompatActivity {
                             completed = false;
                             scrolltext.setDone(completed);
                             loadText(ebook,lastloc);
-                            loadMiniText(literature, breaker, BranchCount);
+                            loadMiniText(litsplit_sent, breaker, BranchCount);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     displayText("Next Chapter");
                                     scrolltext.setDistance();
-                                    scrolltext.setText("                           "+litBranch+".");
+                                    scrolltext.setText("                                                             "+litBranch);
                                     scrolltext.resumeScroll();
                                     player.setVisibility(View.INVISIBLE);
                                     pauser.setVisibility(View.VISIBLE);
@@ -268,7 +280,6 @@ public class ScrollActivity extends AppCompatActivity {
     public void NextRSVP(View view) {
         scrolltext.pauseScroll();
         scrolltext.goForward();
-        displayText(Integer.toString(stems(literature)));
 
 
         pauser.setVisibility(View.INVISIBLE);
@@ -401,9 +412,10 @@ public class ScrollActivity extends AppCompatActivity {
             was.close();
             literature = Html.fromHtml(sb.toString()).toString();
 
-            litSplit = Html.fromHtml(literature).toString().split("\\s+");
+            litSplit = sb.toString().split("\\r\\n|\\n|\\r");
 
-            litsplit_sent = Html.fromHtml(literature).toString().split("(?<=[a-z])\\.\\s+");
+            litsplit_sent = sb.toString().split("\\r\\n|\\n|\\r");
+
 
             runOnUiThread(new Runnable() {
                 @Override
@@ -427,7 +439,7 @@ public class ScrollActivity extends AppCompatActivity {
 
     }
 
-    private void loadMiniText(final String lit, int loc, int iter) {
+    private void loadMiniText(final String[] lit, int loc, int iter) {
 
         Integer div = trimmer(lit);
         Integer mod = stems(lit);
@@ -445,17 +457,17 @@ public class ScrollActivity extends AppCompatActivity {
             tempmodflag = false;
         }
         if (iter < div) {
-            litBranch = TextUtils.join(". ", Arrays.asList(litsplit_sent).subList(loc * iter, loc * iter + loc));
+            litBranch = Html.fromHtml(TextUtils.join(" ", Arrays.asList(lit).subList(loc * iter, loc * iter + loc))).toString();
 
         } else if (!tempmodflag && iter == div) {
-            litBranch = TextUtils.join(". ", Arrays.asList(litsplit_sent).subList(loc * iter, loc * iter + loc));
+            litBranch = Html.fromHtml(TextUtils.join(" ", Arrays.asList(lit).subList(loc * iter, loc * iter + loc))).toString();
             BranchFlag = true;
 
         } else if (tempmodflag && iter == div){
-            litBranch = TextUtils.join(". ", Arrays.asList(litsplit_sent).subList(loc * iter, loc * iter + loc));
+            litBranch = Html.fromHtml(TextUtils.join(" ", Arrays.asList(lit).subList(loc * iter, loc * iter + loc))).toString();
 
         } else if (tempmodflag && iter == (div + 1)){
-            litBranch = TextUtils.join(". ", Arrays.asList(litsplit_sent).subList(loc * iter, loc * iter + mod));
+            litBranch = Html.fromHtml(TextUtils.join(" ", Arrays.asList(lit).subList(loc * iter, loc * iter + mod))).toString();
 
             BranchFlag = true;
         }
@@ -466,15 +478,15 @@ public class ScrollActivity extends AppCompatActivity {
 
 
 
-    public Integer trimmer(final String lit){
+    public Integer trimmer(final String[] lit){
 
-        return Math.round(((float) lit.split("(?<=[a-z])\\.\\s+").length)/20);
+        return lit.length/breaker;
 
     }
 
-    public Integer stems(final String lit){
+    public Integer stems(final String[] lit){
 
-        return lit.split("(?<=[a-z])\\.\\s+").length%20;
+        return lit.length%breaker;
 
     }
 

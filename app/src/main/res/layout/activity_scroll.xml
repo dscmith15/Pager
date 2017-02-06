@@ -18,6 +18,7 @@
         android:layout_centerHorizontal="true"
         android:textColor="#000000" />
 
+
     <com.example.dustin.pager.ScrollTextView
         android:layout_width="match_parent"
         android:background="#00000000"
@@ -29,6 +30,7 @@
         android:layout_centerHorizontal="true"
         android:textColor="#000000">
     </com.example.dustin.pager.ScrollTextView>
+
 
 
     <ImageButton
@@ -135,5 +137,11 @@
         android:layout_alignBottom="@+id/dectex"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+
+
+
+
+
 
 </RelativeLayout>

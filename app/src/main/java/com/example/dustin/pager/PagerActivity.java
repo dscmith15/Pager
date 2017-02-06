@@ -220,6 +220,8 @@ public class PagerActivity extends AppCompatActivity {
             }
             was.close();
             literature = sb.toString();
+            literature = literature.replace("„","\"");
+            literature = literature.replace("“","\"");
             litSplit = literature.split("\\s+");
 
 

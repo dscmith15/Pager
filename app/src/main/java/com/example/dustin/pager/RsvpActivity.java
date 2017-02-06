@@ -281,6 +281,8 @@ public class RsvpActivity extends AppCompatActivity {
             }
             was.close();
             literature = sb.toString();
+            literature = literature.replace("„","\"");
+            literature = literature.replace("“","\"");
 
             litSplit = Html.fromHtml(literature).toString().split("\\s+");
             started = false;
