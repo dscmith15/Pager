@@ -184,14 +184,14 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.books_1:
                 editor.putString("book",getString(R.string.book_title1));
-                editor.putInt("chapter", 2);
+                editor.putInt("chapter", 6);
                 editor.putInt("location", 0);
                 editor.commit();
                 return true;
 
             case R.id.books_2:
                 editor.putString("book",getString(R.string.book_title2));
-                editor.putInt("chapter", 2);
+                editor.putInt("chapter", 4);
                 editor.putInt("location", 0);
                 editor.commit();
                 return true;

@@ -84,6 +84,8 @@ public class ScrollActivity extends AppCompatActivity {
 
     public int textsize = 32;
     public int textchg = 5;
+    public int offsetchg = 3;
+    public int offsettx = 52;
     ScrollTextView scrolltext;
 
     private Toast toast;
@@ -103,7 +105,7 @@ public class ScrollActivity extends AppCompatActivity {
     public SharedPreferences prefs;
     public SharedPreferences.Editor editor;
     public static final String PREFS_NAME = "User_Data";
-    public Integer breaker = 5;
+    public Integer breaker = 4;
     public String[] litsplit_sent;
 
     @Override
@@ -156,11 +158,11 @@ public class ScrollActivity extends AppCompatActivity {
         scrolltext=(ScrollTextView) findViewById(R.id.scrolltext);
         scrolltext.setSelected(true);
 
-        loadText(ebook,lastloc+1);
+        loadText(ebook,lastloc);
         loadMiniText(litsplit_sent,breaker,BranchCount);
 
 
-        scrolltext.setText("                                                             "+litBranch);
+        scrolltext.setText(" ".substring(0, offsettx)+litBranch);
         scrolltext.setTextColor(Color.BLACK);
         scrolltext.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
         firstTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
@@ -192,7 +194,7 @@ public class ScrollActivity extends AppCompatActivity {
                         // do the thread processing / draw
                         completed = scrolltext.isdone();
 
-                        if (completed & mode == -1 & !BranchFlag) {
+                        if (completed & !BranchFlag) {
                             paused = true;
                             counter = 0;
                             completed = false;
@@ -217,12 +219,14 @@ public class ScrollActivity extends AppCompatActivity {
                                 public void run() {
                                     scrolltext.pauseScroll();
                                     scrolltext.setDistance();
-                                    scrolltext.setText("                                                             " + litBranch);
+                                    scrolltext.setText(" ".substring(0, offsettx)+litBranch);
                                     player.setVisibility(View.INVISIBLE);
                                     pauser.setVisibility(View.VISIBLE);
                                     pauser.setVisibility(View.INVISIBLE);
                                     player.setVisibility(View.VISIBLE);
                                     scrolltext.setVisibility(View.INVISIBLE);
+                                    completed = false;
+                                    scrolltext.setDone(completed);
                                     scrolltext.resumeScroll();
 
 
@@ -241,9 +245,24 @@ public class ScrollActivity extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    scrolltext.pauseScroll();
+                                    player.setVisibility(View.INVISIBLE);
+                                    pauser.setVisibility(View.VISIBLE);
+                                    pauser.setVisibility(View.INVISIBLE);
+                                    player.setVisibility(View.VISIBLE);
+                                }
+                            });
+                            while(paused){
+                                paused = scrolltext.isPaused();
+                            }
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    completed = false;
+                                    scrolltext.setDone(completed);
                                     displayText("Next Chapter");
                                     scrolltext.setDistance();
-                                    scrolltext.setText("                                                             "+litBranch);
+                                    scrolltext.setText(" ".substring(0, offsettx)+litBranch);
                                     scrolltext.resumeScroll();
                                     player.setVisibility(View.INVISIBLE);
                                     pauser.setVisibility(View.VISIBLE);
@@ -370,10 +389,14 @@ public class ScrollActivity extends AppCompatActivity {
 
     public void incTextsize(View view){
         textsize+=textchg;
+        offsettx-=offsetchg;
         scrolltext.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
+        scrolltext.computeScroll();
         firstTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
-        displayText(Integer.toString(textsize) + "px");
         scrolltext.pauseScroll();
+        scrolltext.resumeScroll();
+        scrolltext.pauseScroll();
+        displayText(Integer.toString(textsize) + "px");
         pauser.setVisibility(View.INVISIBLE);
         player.setVisibility(View.VISIBLE);
 
@@ -381,10 +404,14 @@ public class ScrollActivity extends AppCompatActivity {
 
     public void decTextsize(View view){
         textsize-=textchg;
+        offsettx+=offsetchg;
         scrolltext.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
+        scrolltext.computeScroll();
         firstTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
-        displayText(Integer.toString(textsize) + "pt");
         scrolltext.pauseScroll();
+        scrolltext.resumeScroll();
+        scrolltext.pauseScroll();
+        displayText(Integer.toString(textsize) + "pt");
         pauser.setVisibility(View.INVISIBLE);
         player.setVisibility(View.VISIBLE);
 
@@ -410,9 +437,12 @@ public class ScrollActivity extends AppCompatActivity {
 
             }
             was.close();
-            literature = Html.fromHtml(sb.toString()).toString();
+            literature = sb.toString();
+            literature = literature.replace("„","\"");
+            literature = literature.replace("“","\"");
 
-            litSplit = sb.toString().split("\\r\\n|\\n|\\r");
+            //litSplit = sb.toString().replace("Copyright © 1956 by Street and Smith Publications, Inc. ","").split("\\r\\n|\\n|\\r");
+            litSplit = literature.split("\\r\\n|\\n|\\r");
 
             litsplit_sent = sb.toString().split("\\r\\n|\\n|\\r");
 
@@ -456,17 +486,17 @@ public class ScrollActivity extends AppCompatActivity {
         } else {
             tempmodflag = false;
         }
-        if (iter < div) {
+        if (iter < div-1) {
             litBranch = Html.fromHtml(TextUtils.join(" ", Arrays.asList(lit).subList(loc * iter, loc * iter + loc))).toString();
 
-        } else if (!tempmodflag && iter == div) {
+        } else if (!tempmodflag && iter == div-1) {
             litBranch = Html.fromHtml(TextUtils.join(" ", Arrays.asList(lit).subList(loc * iter, loc * iter + loc))).toString();
             BranchFlag = true;
 
-        } else if (tempmodflag && iter == div){
+        } else if (tempmodflag && iter == div-1){
             litBranch = Html.fromHtml(TextUtils.join(" ", Arrays.asList(lit).subList(loc * iter, loc * iter + loc))).toString();
 
-        } else if (tempmodflag && iter == (div + 1)){
+        } else if (tempmodflag && iter == (div)){
             litBranch = Html.fromHtml(TextUtils.join(" ", Arrays.asList(lit).subList(loc * iter, loc * iter + mod))).toString();
 
             BranchFlag = true;
@@ -562,7 +592,7 @@ public class ScrollActivity extends AppCompatActivity {
             case R.id.books_1:
                 editor = prefs.edit();
                 editor.putString("book",getString(R.string.book_title1));
-                editor.putInt("chapter", 2);
+                editor.putInt("chapter", 6);
                 editor.putInt("location", 0);
                 editor.putInt("fontsize", textsize);
 
@@ -576,7 +606,7 @@ public class ScrollActivity extends AppCompatActivity {
             case R.id.books_2:
                 editor = prefs.edit();
                 editor.putString("book",getString(R.string.book_title2));
-                editor.putInt("chapter", 2);
+                editor.putInt("chapter", 4);
                 editor.putInt("location", 0);
                 editor.putInt("fontsize", textsize);
 
