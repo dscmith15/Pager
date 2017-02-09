@@ -61,6 +61,8 @@ public class PagerActivity extends AppCompatActivity {
     private boolean started = false;
     public String ebook;
 
+    public float proploc;
+
 
     public Pagination mPagination;
     public CharSequence mText;
@@ -94,9 +96,11 @@ public class PagerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         textsize = prefs.getInt("fontsize", 32);
         lastloc =  prefs.getInt("chapter", 2);
+        proploc = prefs.getFloat("prop_loc",0);
         mCurrentIndex = prefs.getInt("location", 0);
         ebook = prefs.getString("book",getString(R.string.book_title1));
 
@@ -108,8 +112,16 @@ public class PagerActivity extends AppCompatActivity {
         editor.putInt("read_mode", 2);
         editor.commit();
 
-
         setContentView(R.layout.activity_pager);
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                //View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+
         toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 
         mTextView = (TextView) findViewById(R.id.tv);
@@ -124,6 +136,8 @@ public class PagerActivity extends AppCompatActivity {
 
         loadText(ebook, lastloc);
 
+
+
         firstTextView = (TextView) findViewById(R.id.word_landing);
         firstTextView.setSelected(true);
         spanString = new SpannableString(Html.fromHtml(literature));
@@ -133,6 +147,7 @@ public class PagerActivity extends AppCompatActivity {
         mTextView.setVisibility(View.INVISIBLE);
         mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
         firstTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
+
         mTextView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
             @Override
@@ -153,15 +168,27 @@ public class PagerActivity extends AppCompatActivity {
 
 
 
+
         findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                mCurrentIndex = (mCurrentIndex > 0) ? mCurrentIndex - 1 : 0;
-                update();
+                if (mCurrentIndex > 0) {
+                    mCurrentIndex = (mCurrentIndex > 0) ? mCurrentIndex - 1 : 0;
+                    update();
+                } else {
+                    passageflag = true;
+                    lastloc--;
 
+                    loadText(ebook, lastloc);
+                    mCurrentIndex = 0;
+
+                    prepView();
+                    passageflag = false;
+                }
             }
         });
+
         findViewById(R.id.btn_forward).setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
@@ -169,6 +196,7 @@ public class PagerActivity extends AppCompatActivity {
 
 
                 if (begin == false) {
+                    mCurrentIndex= Math.round(proploc*mPagination.size());
                     mTextView.setVisibility(View.VISIBLE);
                     firstTextView.setVisibility(View.INVISIBLE);
                     starttime = System.nanoTime();
@@ -194,9 +222,20 @@ public class PagerActivity extends AppCompatActivity {
 
 
                 update();
+
             }
 
         });
+    }
+    protected void onDestroy() {
+        super.onDestroy();
+        proploc = (float) mCurrentIndex/mPagination.size();
+        editor = prefs.edit();
+        editor.putInt("chapter", lastloc); // value to store
+        editor.putInt("location", mCurrentIndex);
+        editor.putFloat("prop_loc", proploc);
+        editor.putInt("fontsize", textsize);
+        editor.commit();
     }
 
 
@@ -327,10 +366,11 @@ public class PagerActivity extends AppCompatActivity {
                 return true;
 
             case R.id.rsvp:
-                mCurrentIndex = mCurrentIndex/mPagination.size();
+                proploc = (float) mCurrentIndex/mPagination.size();
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", mCurrentIndex);
+                editor.putFloat("prop_loc", proploc);
                 editor.putInt("fontsize", textsize);
                 editor.commit();
                 Intent m_rsvp = new Intent(this, RsvpActivity.class);
@@ -339,10 +379,11 @@ public class PagerActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.pager_m:
-                mCurrentIndex = mCurrentIndex/mPagination.size();
+                proploc = (float) mCurrentIndex/mPagination.size();
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", mCurrentIndex);
+                editor.putFloat("prop_loc", proploc);
                 editor.putInt("fontsize", textsize);
                 editor.commit();
                 Intent pagerm = new Intent(this, PagerActivity.class);
@@ -351,10 +392,11 @@ public class PagerActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.scroller:
-                mCurrentIndex = mCurrentIndex/mPagination.size();
+                proploc = (float) mCurrentIndex/mPagination.size();
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", mCurrentIndex);
+                editor.putFloat("prop_loc", proploc);
                 editor.putInt("fontsize", textsize);
                 editor.commit();
                 Intent scrollm = new Intent(this, ScrollActivity.class);
@@ -366,8 +408,9 @@ public class PagerActivity extends AppCompatActivity {
             case R.id.books_1:
                 editor = prefs.edit();
                 editor.putString("book",getString(R.string.book_title1));
-                editor.putInt("chapter", 6);
+                editor.putInt("chapter", 2);
                 editor.putInt("location", 0);
+                editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);
 
                 editor.commit();
@@ -380,8 +423,9 @@ public class PagerActivity extends AppCompatActivity {
             case R.id.books_2:
                 editor = prefs.edit();
                 editor.putString("book",getString(R.string.book_title2));
-                editor.putInt("chapter", 4);
+                editor.putInt("chapter", 6);
                 editor.putInt("location", 0);
+                editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);
 
                 editor.commit();
@@ -396,6 +440,7 @@ public class PagerActivity extends AppCompatActivity {
                 editor.putString("book",getString(R.string.book_title3));
                 editor.putInt("chapter", 2);
                 editor.putInt("location", 0);
+                editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);
 
                 editor.commit();

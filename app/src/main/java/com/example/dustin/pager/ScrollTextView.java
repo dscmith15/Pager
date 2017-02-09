@@ -191,6 +191,7 @@ public class ScrollTextView extends TextView {
     }
 
 
+
     @Override
      /*
      * override the computeScroll to restart scrolling when finished so as that
@@ -231,6 +232,8 @@ public class ScrollTextView extends TextView {
     public float getmScrollSpeed(){
         return mScrollSpeed;
     }
+
+    public void setmScrollSpeed(Float speedm){mScrollSpeed = speedm;};
 
     public int getRndDuration() {
         return mRndDuration;

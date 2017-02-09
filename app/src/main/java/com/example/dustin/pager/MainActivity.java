@@ -66,6 +66,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         setContentView(R.layout.activity_main);
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                //View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 
         mTextView = (TextView) findViewById(R.id.tv);
@@ -86,10 +93,12 @@ public class MainActivity extends AppCompatActivity {
             editor.putBoolean("userhist", true);
             editor.putInt("read_mode", 4);
             editor.putInt("chapter", 2);
+            editor.putFloat("prop_loc",0);
             editor.putInt("location", 0);
             editor.putInt("fontsize", 32);
+            editor.putInt("offset",52);
             editor.putInt("rsvpSpeed", 250);
-            editor.putInt("scrollSpeed", 200);
+            editor.putFloat("scrollSpeed", 200);
             editor.putString("book", getString(R.string.book_title1));
             editor.commit();
         } else {
@@ -191,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.books_2:
                 editor.putString("book",getString(R.string.book_title2));
-                editor.putInt("chapter", 4);
+                editor.putInt("chapter", 6);
                 editor.putInt("location", 0);
                 editor.commit();
                 return true;

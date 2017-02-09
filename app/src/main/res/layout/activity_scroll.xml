@@ -66,29 +66,6 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/inctex"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/start_button"
-        android:layout_alignEnd="@+id/start_button"
-        android:src="@drawable/plus"
-        android:onClick="incTextsize"
-        android:background="#0000"/>
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/dectex"
-        android:src="@drawable/minus"
-        android:onClick="decTextsize"
-        android:background="#0000"
-        android:layout_below="@+id/inctex"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="false"
-        android:layout_marginTop="57dp" />
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/imageButton3"
         android:src="@drawable/play2"
         android:onClick="StartScroll"
@@ -119,11 +96,35 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/dectex"
+        android:src="@drawable/minus"
+        android:onClick="decTextsize"
+        android:background="#0000"
+        android:layout_marginTop="37dp"
+        android:layout_below="@+id/faster"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/inctex"
+        android:src="@drawable/plus"
+        android:onClick="incTextsize"
+        android:background="#0000"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="32dp" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/faster"
         android:src="@drawable/speedometer_3"
         android:onClick="fastRSVP"
         android:background="#0000"
-        android:layout_alignParentTop="true"
+        android:layout_alignTop="@+id/inctex"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -134,14 +135,9 @@
         android:src="@drawable/speedometer_3"
         android:onClick="slowRSVP"
         android:background="#0000"
-        android:layout_alignBottom="@+id/dectex"
+        android:layout_alignTop="@+id/dectex"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
-
-
-
-
-
 
 
 </RelativeLayout>

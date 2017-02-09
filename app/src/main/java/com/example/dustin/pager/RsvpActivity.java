@@ -57,7 +57,7 @@ public class RsvpActivity extends AppCompatActivity {
     MenuItem hider;
     public int lastloc;
 
-
+    public float proploc;
 
 
 
@@ -102,6 +102,7 @@ public class RsvpActivity extends AppCompatActivity {
         prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         textsize = prefs.getInt("fontsize", 32);
         lastloc =  prefs.getInt("chapter", 2);
+        proploc = prefs.getFloat("prop_loc",0);
         counter = prefs.getInt("location", 0);
         wpm = prefs.getInt("rsvpSpeed", 250);
         ebook = prefs.getString("book",getString(R.string.book_title1));
@@ -114,7 +115,16 @@ public class RsvpActivity extends AppCompatActivity {
         editor.putInt("read_mode", 1);
         editor.commit();
 
+
+
         setContentView(R.layout.activity_mrsvp);
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                //View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         slowdown = (ImageButton) findViewById(R.id.slower);
@@ -142,6 +152,7 @@ public class RsvpActivity extends AppCompatActivity {
 
 
         loadText(ebook,lastloc);
+        counter = Math.round(proploc*litSplit.length);
 
 
         loadorders("Random_Orders_Spritz.csv");
@@ -202,6 +213,18 @@ public class RsvpActivity extends AppCompatActivity {
 
     }
 
+    protected void onDestroy() {
+        super.onDestroy();
+        proploc = (float) counter/litSplit.length;
+        editor = prefs.edit();
+        editor.putInt("chapter", lastloc); // value to store
+        editor.putInt("location", counter);
+        editor.putFloat("prop_loc", proploc);
+        editor.putInt("fontsize", textsize);
+        editor.putInt("rsvpSpeed",wpm);
+        editor.commit();
+    }
+
 
 
 
@@ -252,6 +275,11 @@ public class RsvpActivity extends AppCompatActivity {
                 pausedInd.setVisibility(View.VISIBLE);
             }
 
+        } else {
+            lastloc--;
+            counter = 0;
+            loadText(ebook, lastloc);
+            firstTextView.setText("Chapter Break");
         }
 
 
@@ -422,10 +450,11 @@ public class RsvpActivity extends AppCompatActivity {
                 }
                 return true;
             case R.id.rsvp:
-                counter = counter/litSplit.length;
+                proploc = (float) counter/litSplit.length;
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", counter);
+                editor.putFloat("prop_loc", proploc);
                 editor.putInt("fontsize", textsize);
                 editor.putInt("rsvpSpeed",wpm);
                 editor.commit();
@@ -435,10 +464,11 @@ public class RsvpActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.pager_m:
-                counter = counter/litSplit.length;
+                proploc = (float) counter/litSplit.length;
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", counter);
+                editor.putFloat("prop_loc", proploc);
                 editor.putInt("fontsize", textsize);
                 editor.putInt("rsvpSpeed",wpm);
                 editor.commit();
@@ -448,10 +478,11 @@ public class RsvpActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.scroller:
-                counter = counter/litSplit.length;
+                proploc = (float) counter/litSplit.length;
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", counter);
+                editor.putFloat("prop_loc", proploc);
                 editor.putInt("fontsize", textsize);
                 editor.putInt("rsvpSpeed",wpm);
                 editor.commit();
@@ -465,8 +496,9 @@ public class RsvpActivity extends AppCompatActivity {
 
                 editor = prefs.edit();
                 editor.putString("book",getString(R.string.book_title1));
-                editor.putInt("chapter", 6);
+                editor.putInt("chapter", 2);
                 editor.putInt("location", 0);
+                editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);
                 editor.putInt("rsvpSpeed",wpm);
                 editor.commit();
@@ -479,8 +511,9 @@ public class RsvpActivity extends AppCompatActivity {
             case R.id.books_2:
                 editor = prefs.edit();
                 editor.putString("book",getString(R.string.book_title2));
-                editor.putInt("chapter", 4);
+                editor.putInt("chapter", 6);
                 editor.putInt("location", 0);
+                editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);
                 editor.putInt("rsvpSpeed",wpm);
                 editor.commit();
@@ -495,6 +528,7 @@ public class RsvpActivity extends AppCompatActivity {
                 editor.putString("book",getString(R.string.book_title3));
                 editor.putInt("chapter", 1);
                 editor.putInt("location", 0);
+                editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);
                 editor.putInt("rsvpSpeed",wpm);
                 editor.commit();

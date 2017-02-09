@@ -84,9 +84,11 @@ public class ScrollActivity extends AppCompatActivity {
 
     public int textsize = 32;
     public int textchg = 5;
-    public int offsetchg = 4;
+    public int offsetchg = 5;
     public int offsettx = 52;
     ScrollTextView scrolltext;
+
+    public float proploc;
 
     private Toast toast;
     public boolean hidden = false;
@@ -108,6 +110,7 @@ public class ScrollActivity extends AppCompatActivity {
     public Integer breaker = 4;
     public String[] litsplit_sent;
     public String buffedString;
+    public Float scrollerspeed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +120,10 @@ public class ScrollActivity extends AppCompatActivity {
         textsize = prefs.getInt("fontsize", 32);
         lastloc =  prefs.getInt("chapter", 2);
         counter = prefs.getInt("location", 0);
+        proploc = prefs.getFloat("prop_loc",0);
+        scrollerspeed = prefs.getFloat("scrollspeed",200);
+
+        offsettx = prefs.getInt("offset",52);
         ebook = prefs.getString("book",getString(R.string.book_title1));
 
 
@@ -129,6 +136,13 @@ public class ScrollActivity extends AppCompatActivity {
         editor.commit();
 
         setContentView(R.layout.activity_scroll);
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                //View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         firstTextView = (TextView) findViewById(R.id.word_landing);
         firstTextView.setSelected(true);
 
@@ -158,8 +172,10 @@ public class ScrollActivity extends AppCompatActivity {
 
         scrolltext=(ScrollTextView) findViewById(R.id.scrolltext);
         scrolltext.setSelected(true);
+        scrolltext.setmScrollSpeed(scrollerspeed);
 
         loadText(ebook,lastloc);
+        BranchCount = Math.round(proploc*trimmer(litsplit_sent));
         loadMiniText(litsplit_sent,breaker,BranchCount);
 
         buffedString = stringGrow(offsettx);
@@ -292,6 +308,19 @@ public class ScrollActivity extends AppCompatActivity {
 
     }
 
+    protected void onDestroy() {
+        super.onDestroy();
+        proploc = (float) BranchCount/(litsplit_sent.length/breaker);
+        editor = prefs.edit();
+        editor.putInt("chapter", lastloc); // value to store
+        editor.putInt("location", counter);
+        editor.putFloat("prop_loc", proploc);
+        editor.putFloat("scrollspeed",scrolltext.getmScrollSpeed());
+        editor.putInt("fontsize", textsize);
+        editor.putInt("offset",offsettx);
+        editor.commit();
+    }
+
 
     private void displayText(final String message) {
 
@@ -311,11 +340,55 @@ public class ScrollActivity extends AppCompatActivity {
     }
 
     public void PrevRSVP(View view) {
-        scrolltext.pauseScroll();
-        scrolltext.goBack();
+        if (scrolltext.getDistance()> 0) {
+            scrolltext.pauseScroll();
+            scrolltext.goBack();
 
-        pauser.setVisibility(View.INVISIBLE);
-        player.setVisibility(View.VISIBLE);
+            pauser.setVisibility(View.INVISIBLE);
+            player.setVisibility(View.VISIBLE);
+        } else if (scrolltext.getDistance()<1 & BranchCount > 0){
+            displayText("Back");
+            scrolltext.pauseScroll();
+            pauser.setVisibility(View.INVISIBLE);
+            player.setVisibility(View.VISIBLE);
+            BranchCount--;
+            loadMiniText(litsplit_sent, breaker, BranchCount);
+            scrolltext.setDistance();
+            buffedString = stringGrow(offsettx);
+            scrolltext.setText(buffedString+litBranch);
+            player.setVisibility(View.INVISIBLE);
+            pauser.setVisibility(View.VISIBLE);
+            pauser.setVisibility(View.INVISIBLE);
+            player.setVisibility(View.VISIBLE);
+            scrolltext.setVisibility(View.INVISIBLE);
+            completed = false;
+            scrolltext.setDone(completed);
+        } else if (scrolltext.getDistance()<1 & BranchCount == 0){
+            displayText("Back");
+            scrolltext.pauseScroll();
+            lastloc--;
+            BranchCount = 0;
+            counter = 0;
+            completed = false;
+            scrolltext.setDone(completed);
+            loadText(ebook,lastloc);
+            loadMiniText(litsplit_sent, breaker, BranchCount);
+            pauser.setVisibility(View.INVISIBLE);
+            player.setVisibility(View.VISIBLE);
+            displayText("Next Chapter");
+            scrolltext.setDistance();
+            buffedString = stringGrow(offsettx);
+            scrolltext.setText(buffedString+litBranch);
+            scrolltext.resumeScroll();
+            player.setVisibility(View.INVISIBLE);
+            pauser.setVisibility(View.VISIBLE);
+            scrolltext.pauseScroll();
+            pauser.setVisibility(View.INVISIBLE);
+            player.setVisibility(View.VISIBLE);
+            scrolltext.setVisibility(View.INVISIBLE);
+            firstTextView.setVisibility(View.VISIBLE);
+            firstTextView.setText("Chapter Break");
+        }
 
 
 
@@ -367,19 +440,12 @@ public class ScrollActivity extends AppCompatActivity {
         return result;
     }
 
-
-
-
-
-
     public void StartScroll(View view) {
         completed = scrolltext.isdone();
         if(!started){
             firstTextView.setVisibility(View.INVISIBLE);
             scrolltext.setVisibility(View.VISIBLE);
             started = true;
-
-
         }
 
         if (!completed) {
@@ -461,11 +527,18 @@ public class ScrollActivity extends AppCompatActivity {
             literature = sb.toString();
             literature = literature.replace("„","\"");
             literature = literature.replace("“","\"");
+            literature = literature.replace("\n\n","\n");
+            literature = literature.replace("  @page { margin-bottom: 5.000000pt; margin-top: 5.000000pt; }","");
+            literature = literature.replace("  p.sgc-1 {margin:0pt; border:0pt; height:1em}","");
+            literature = literature.replace("  /*]]>*/","");
+            literature = literature.replace("/*<![CDATA[*/","");
+            literature = literature.replace("\n\n","\n");
+            literature = literature.replace("\n\n","\n");
 
             //litSplit = sb.toString().replace("Copyright © 1956 by Street and Smith Publications, Inc. ","").split("\\r\\n|\\n|\\r");
             litSplit = literature.split("\\r\\n|\\n|\\r");
 
-            litsplit_sent = sb.toString().split("\\r\\n|\\n|\\r");
+            litsplit_sent = literature.split("\\r\\n|\\n|\\r");
 
 
             runOnUiThread(new Runnable() {
@@ -573,11 +646,14 @@ public class ScrollActivity extends AppCompatActivity {
                 return true;
 
             case R.id.rsvp:
-                counter = scrolltext.getDistance()/scrolltext.getWidth();
+                proploc = (float) BranchCount/(litsplit_sent.length/breaker);
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", counter);
+                editor.putFloat("prop_loc", proploc);
+                editor.putFloat("scrollspeed",scrolltext.getmScrollSpeed());
                 editor.putInt("fontsize", textsize);
+                editor.putInt("offset",offsettx);
                 editor.commit();
                 Intent m_rsvp = new Intent(this, RsvpActivity.class);
                 m_rsvp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -585,11 +661,14 @@ public class ScrollActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.pager_m:
-                counter = scrolltext.getDistance()/scrolltext.getWidth();
+                proploc = (float) BranchCount/(litsplit_sent.length/breaker);
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", counter);
+                editor.putFloat("prop_loc", proploc);
+                editor.putFloat("scrollspeed",scrolltext.getmScrollSpeed());
                 editor.putInt("fontsize", textsize);
+                editor.putInt("offset",offsettx);
                 editor.commit();
                 Intent pagerm = new Intent(this, PagerActivity.class);
                 pagerm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -597,11 +676,14 @@ public class ScrollActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.scroller:
-                counter = scrolltext.getDistance()/scrolltext.getWidth();
+                proploc = (float) BranchCount/(litsplit_sent.length/breaker);
                 editor = prefs.edit();
                 editor.putInt("chapter", lastloc); // value to store
                 editor.putInt("location", counter);
+                editor.putFloat("prop_loc", proploc);
+                editor.putFloat("scrollspeed",scrolltext.getmScrollSpeed());
                 editor.putInt("fontsize", textsize);
+                editor.putInt("offset",offsettx);
                 editor.commit();
                 Intent scrollm = new Intent(this, ScrollActivity.class);
                 scrollm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -613,10 +695,11 @@ public class ScrollActivity extends AppCompatActivity {
             case R.id.books_1:
                 editor = prefs.edit();
                 editor.putString("book",getString(R.string.book_title1));
-                editor.putInt("chapter", 6);
+                editor.putInt("chapter", 2);
                 editor.putInt("location", 0);
+                editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);
-
+                editor.putInt("offset",offsettx);
                 editor.commit();
                 scrollm = new Intent(this, ScrollActivity.class);
                 scrollm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -627,10 +710,11 @@ public class ScrollActivity extends AppCompatActivity {
             case R.id.books_2:
                 editor = prefs.edit();
                 editor.putString("book",getString(R.string.book_title2));
-                editor.putInt("chapter", 4);
+                editor.putInt("chapter", 6);
                 editor.putInt("location", 0);
+                editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);
-
+                editor.putInt("offset",offsettx);
                 editor.commit();
                 scrollm = new Intent(this, ScrollActivity.class);
                 scrollm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -643,8 +727,9 @@ public class ScrollActivity extends AppCompatActivity {
                 editor.putString("book",getString(R.string.book_title3));
                 editor.putInt("chapter", 1);
                 editor.putInt("location", 0);
+                editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);
-
+                editor.putInt("offset",offsettx);
                 editor.commit();
                 scrollm = new Intent(this, ScrollActivity.class);
                 scrollm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
