@@ -84,7 +84,7 @@ public class ScrollActivity extends AppCompatActivity {
 
     public int textsize = 32;
     public int textchg = 5;
-    public int offsetchg = 3;
+    public int offsetchg = 4;
     public int offsettx = 52;
     ScrollTextView scrolltext;
 
@@ -107,6 +107,7 @@ public class ScrollActivity extends AppCompatActivity {
     public static final String PREFS_NAME = "User_Data";
     public Integer breaker = 4;
     public String[] litsplit_sent;
+    public String buffedString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,8 +162,8 @@ public class ScrollActivity extends AppCompatActivity {
         loadText(ebook,lastloc);
         loadMiniText(litsplit_sent,breaker,BranchCount);
 
-
-        scrolltext.setText(" ".substring(0, offsettx)+litBranch);
+        buffedString = stringGrow(offsettx);
+        scrolltext.setText(buffedString+litBranch);
         scrolltext.setTextColor(Color.BLACK);
         scrolltext.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
         firstTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
@@ -219,7 +220,8 @@ public class ScrollActivity extends AppCompatActivity {
                                 public void run() {
                                     scrolltext.pauseScroll();
                                     scrolltext.setDistance();
-                                    scrolltext.setText(" ".substring(0, offsettx)+litBranch);
+                                    buffedString = stringGrow(offsettx);
+                                    scrolltext.setText(buffedString+litBranch);
                                     player.setVisibility(View.INVISIBLE);
                                     pauser.setVisibility(View.VISIBLE);
                                     pauser.setVisibility(View.INVISIBLE);
@@ -262,7 +264,8 @@ public class ScrollActivity extends AppCompatActivity {
                                     scrolltext.setDone(completed);
                                     displayText("Next Chapter");
                                     scrolltext.setDistance();
-                                    scrolltext.setText(" ".substring(0, offsettx)+litBranch);
+                                    buffedString = stringGrow(offsettx);
+                                    scrolltext.setText(buffedString+litBranch);
                                     scrolltext.resumeScroll();
                                     player.setVisibility(View.INVISIBLE);
                                     pauser.setVisibility(View.VISIBLE);
@@ -354,10 +357,21 @@ public class ScrollActivity extends AppCompatActivity {
             scrolltext.goFaster();
             displayText(Float.toString(scrolltext.getmScrollSpeed()));
         }
-
-
-
     }
+
+    public String stringGrow(Integer leng) {
+        String result=" ";
+        for (int i = 0; i<leng; i++) {
+            result = result + " ";
+        }
+        return result;
+    }
+
+
+
+
+
+
     public void StartScroll(View view) {
         completed = scrolltext.isdone();
         if(!started){
@@ -388,12 +402,16 @@ public class ScrollActivity extends AppCompatActivity {
     }
 
     public void incTextsize(View view){
+        scrolltext.pauseScroll();
         textsize+=textchg;
         offsettx-=offsetchg;
-        scrolltext.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
-        scrolltext.computeScroll();
-        firstTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
         scrolltext.pauseScroll();
+        Integer tempspot = scrolltext.getDistance();
+        scrolltext.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
+        firstTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
+        buffedString = stringGrow(offsettx);
+        scrolltext.setText(buffedString+litBranch);
+        scrolltext.scrollTo(tempspot,0);
         scrolltext.resumeScroll();
         scrolltext.pauseScroll();
         displayText(Integer.toString(textsize) + "px");
@@ -403,12 +421,15 @@ public class ScrollActivity extends AppCompatActivity {
     }
 
     public void decTextsize(View view){
+        scrolltext.pauseScroll();
         textsize-=textchg;
         offsettx+=offsetchg;
+        Integer tempspot = scrolltext.getDistance();
         scrolltext.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
-        scrolltext.computeScroll();
         firstTextView.setTextSize(TypedValue.COMPLEX_UNIT_PT, textsize);
-        scrolltext.pauseScroll();
+        buffedString = stringGrow(offsettx);
+        scrolltext.setText(buffedString+litBranch);
+        scrolltext.scrollTo(tempspot,0);
         scrolltext.resumeScroll();
         scrolltext.pauseScroll();
         displayText(Integer.toString(textsize) + "pt");
