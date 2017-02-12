@@ -225,6 +225,75 @@ public class RsvpActivity extends AppCompatActivity {
         editor.commit();
     }
 
+    protected void onResume(){
+        super.onResume();
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                //View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+    }
+    protected void onStart(){
+        super.onStart();
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                //View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+    }
+
+    protected void onPause(){
+        super.onPause();
+        proploc = (float) counter/litSplit.length;
+        editor = prefs.edit();
+        editor.putInt("chapter", lastloc); // value to store
+        editor.putInt("location", counter);
+        editor.putFloat("prop_loc", proploc);
+        editor.putInt("fontsize", textsize);
+        editor.putInt("rsvpSpeed",wpm);
+        editor.commit();
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                //View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+
+
+    }
+
+    protected void onRestart(){
+        super.onRestart();
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                //View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+    }
+
+    protected void onStop(){
+        super.onStop();
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                //View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+    }
+
 
 
 
