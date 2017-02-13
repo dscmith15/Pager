@@ -284,6 +284,14 @@ public class RsvpActivity extends AppCompatActivity {
 
     protected void onStop(){
         super.onStop();
+        proploc = (float) counter/litSplit.length;
+        editor = prefs.edit();
+        editor.putInt("chapter", lastloc); // value to store
+        editor.putInt("location", counter);
+        editor.putFloat("prop_loc", proploc);
+        editor.putInt("fontsize", textsize);
+        editor.putInt("rsvpSpeed",wpm);
+        editor.commit();
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(
                 //View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -293,7 +301,16 @@ public class RsvpActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
     }
-
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    }
 
 
 
@@ -380,6 +397,19 @@ public class RsvpActivity extends AppCompatActivity {
             literature = sb.toString();
             literature = literature.replace("„","\"");
             literature = literature.replace("“","\"");
+            literature = literature.replace("\n\n","\n");
+            literature = literature.replace("  @page { margin-bottom: 5.000000pt; margin-top: 5.000000pt; }","");
+            literature = literature.replace("  p.sgc-1 {margin:0pt; border:0pt; height:1em}","");
+            literature = literature.replace("  /*]]>*/","");
+            literature = literature.replace("/*<![CDATA[*/","");
+            literature = literature.replace("\n\n","\n");
+            literature = literature.replace("\n\n","\n");
+            literature = literature.replace("\n\n","\n");
+            literature = literature.replace("\n\n","\n");
+            literature = literature.replace("\n\n","\n");
+            literature = literature.replace("\n\n","\n");
+            literature = literature.replace("\n\n","\n");
+            literature = literature.replace("\n\n","\n");
 
             litSplit = Html.fromHtml(literature).toString().split("\\s+");
             started = false;
@@ -565,7 +595,7 @@ public class RsvpActivity extends AppCompatActivity {
 
                 editor = prefs.edit();
                 editor.putString("book",getString(R.string.book_title1));
-                editor.putInt("chapter", 2);
+                editor.putInt("chapter", 4);
                 editor.putInt("location", 0);
                 editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);
@@ -595,7 +625,7 @@ public class RsvpActivity extends AppCompatActivity {
             case R.id.books_3:
                 editor = prefs.edit();
                 editor.putString("book",getString(R.string.book_title3));
-                editor.putInt("chapter", 1);
+                editor.putInt("chapter", 5);
                 editor.putInt("location", 0);
                 editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);

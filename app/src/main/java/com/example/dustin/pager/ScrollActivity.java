@@ -84,7 +84,7 @@ public class ScrollActivity extends AppCompatActivity {
 
     public int textsize = 32;
     public int textchg = 5;
-    public int offsetchg = 5;
+    public int offsetchg = 4;
     public int offsettx = 52;
     ScrollTextView scrolltext;
 
@@ -107,7 +107,7 @@ public class ScrollActivity extends AppCompatActivity {
     public SharedPreferences prefs;
     public SharedPreferences.Editor editor;
     public static final String PREFS_NAME = "User_Data";
-    public Integer breaker = 4;
+    public Integer breaker = 2;
     public String[] litsplit_sent;
     public String buffedString;
     public Float scrollerspeed;
@@ -138,11 +138,12 @@ public class ScrollActivity extends AppCompatActivity {
         setContentView(R.layout.activity_scroll);
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(
-                //View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                  View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+
         firstTextView = (TextView) findViewById(R.id.word_landing);
         firstTextView.setSelected(true);
 
@@ -161,10 +162,6 @@ public class ScrollActivity extends AppCompatActivity {
 
         //DialogFragment modeFrag = new ModeDialogFragment();
         //modeFrag.show(getFragmentManager(),"Mode Frag");
-
-
-
-
 
         toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 
@@ -188,11 +185,6 @@ public class ScrollActivity extends AppCompatActivity {
         scrolltext.pauseScroll();
         scrolltext.setVisibility(View.INVISIBLE);
         firstTextView.setText("X");
-
-
-
-
-
 
         //Timer thread stuff
 
@@ -324,31 +316,29 @@ public class ScrollActivity extends AppCompatActivity {
         super.onResume();
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(
-                //View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        scrolltext.setVisibility(View.VISIBLE);
-        scrolltext.resumeScroll();
-        player.setVisibility(View.INVISIBLE);
-        pauser.setVisibility(View.VISIBLE);
-        scrolltext.pauseScroll();
+        scrolltext.scrollTo(scrolltext.getDistance(),0);
+
+
 
     }
     protected void onStart(){
         super.onStart();
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(
-                //View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        scrolltext.setVisibility(View.VISIBLE);
+        scrolltext.scrollTo(scrolltext.getDistance(),0);
 
 
     }
+
+
 
     protected void onPause(){
         super.onPause();
@@ -363,37 +353,49 @@ public class ScrollActivity extends AppCompatActivity {
         editor.commit();
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(
-                //View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        scrolltext.setVisibility(View.VISIBLE);
+        scrolltext.scrollTo(scrolltext.getDistance(),0);
+
 
     }
 
     protected void onRestart(){
         super.onRestart();
-        View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(
-                //View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        scrolltext.setVisibility(View.VISIBLE);
+
+
+
 
     }
 
     protected void onStop(){
         super.onStop();
+        proploc = (float) BranchCount/(litsplit_sent.length/breaker);
+        editor = prefs.edit();
+        editor.putInt("chapter", lastloc); // value to store
+        editor.putInt("location", counter);
+        editor.putFloat("prop_loc", proploc);
+        editor.putFloat("scrollspeed",scrolltext.getmScrollSpeed());
+        editor.putInt("fontsize", textsize);
+        editor.putInt("offset",offsettx);
+        editor.commit();
+
+
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(
-                //View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+        scrolltext.scrollTo(scrolltext.getDistance(),0);
 
     }
 
@@ -489,6 +491,7 @@ public class ScrollActivity extends AppCompatActivity {
         }
 
 
+
     }
     public void fastRSVP(View view) {
 
@@ -534,6 +537,7 @@ public class ScrollActivity extends AppCompatActivity {
 
         }
     }
+
     public void pauseScroll(View view) {
         scrolltext.pauseScroll();
         pauser.setVisibility(View.INVISIBLE);
@@ -608,6 +612,12 @@ public class ScrollActivity extends AppCompatActivity {
             literature = literature.replace("  p.sgc-1 {margin:0pt; border:0pt; height:1em}","");
             literature = literature.replace("  /*]]>*/","");
             literature = literature.replace("/*<![CDATA[*/","");
+            literature = literature.replace("\n\n","\n");
+            literature = literature.replace("\n\n","\n");
+            literature = literature.replace("\n\n","\n");
+            literature = literature.replace("\n\n","\n");
+            literature = literature.replace("\n\n","\n");
+            literature = literature.replace("\n\n","\n");
             literature = literature.replace("\n\n","\n");
             literature = literature.replace("\n\n","\n");
 
@@ -771,7 +781,7 @@ public class ScrollActivity extends AppCompatActivity {
             case R.id.books_1:
                 editor = prefs.edit();
                 editor.putString("book",getString(R.string.book_title1));
-                editor.putInt("chapter", 2);
+                editor.putInt("chapter", 4);
                 editor.putInt("location", 0);
                 editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);
@@ -801,7 +811,7 @@ public class ScrollActivity extends AppCompatActivity {
             case R.id.books_3:
                 editor = prefs.edit();
                 editor.putString("book",getString(R.string.book_title3));
-                editor.putInt("chapter", 1);
+                editor.putInt("chapter", 5);
                 editor.putInt("location", 0);
                 editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);
@@ -844,5 +854,8 @@ public class ScrollActivity extends AppCompatActivity {
         } catch (FileNotFoundException e) {
         } catch (IOException e) {
         }   }
+
+
+
 
 }
