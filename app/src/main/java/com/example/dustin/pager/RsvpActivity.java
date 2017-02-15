@@ -145,9 +145,6 @@ public class RsvpActivity extends AppCompatActivity {
 
         toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 
-
-
-
         mDelay= 60000/wpm;
 
 
@@ -428,8 +425,9 @@ public class RsvpActivity extends AppCompatActivity {
     }
 
     public void slowRSVP(View view) {
-        wpm -= 10;
-
+        if (wpm>0) {
+            wpm -= 10;
+        }
         // show end user new wpm
 
         displayText(Long.toString(wpm) + " wpm");
