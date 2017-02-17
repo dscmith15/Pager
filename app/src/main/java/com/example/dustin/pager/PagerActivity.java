@@ -176,14 +176,17 @@ public class PagerActivity extends AppCompatActivity {
                 if (mCurrentIndex > 0) {
                     mCurrentIndex = (mCurrentIndex > 0) ? mCurrentIndex - 1 : 0;
                     update();
-                } else {
+                } else if (mCurrentIndex <=0){
+
                     passageflag = true;
                     lastloc--;
 
                     loadText(ebook, lastloc);
-                    mCurrentIndex = 0;
-
                     prepView();
+
+                    mCurrentIndex = mPagination.size()-1;
+                    prepView();
+
                     passageflag = false;
                 }
             }
@@ -203,7 +206,7 @@ public class PagerActivity extends AppCompatActivity {
                     begin = true;
                 } else {
                     mCurrentIndex = (mCurrentIndex < mPagination.size() - 1) ? mCurrentIndex + 1 : mPagination.size() - 1;
-                    if (mCurrentIndex == mPagination.size() - 1) {
+                    if (mCurrentIndex >= mPagination.size()-1) {
                         //passageflag is used to know if the passage is over
                         passageflag = true;
                         lastloc++;

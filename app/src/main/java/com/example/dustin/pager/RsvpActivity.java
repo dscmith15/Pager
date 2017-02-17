@@ -360,9 +360,9 @@ public class RsvpActivity extends AppCompatActivity {
 
         } else {
             lastloc--;
-            counter = 0;
             loadText(ebook, lastloc);
-            firstTextView.setText("Chapter Break");
+            counter = litSplit.length-1;
+            firstTextView.setText("Previous Chapter");
         }
 
 
@@ -400,6 +400,7 @@ public class RsvpActivity extends AppCompatActivity {
             literature = literature.replace("  /*]]>*/","");
             literature = literature.replace("/*<![CDATA[*/","");
             literature = literature.replace("\n\n","\n");
+            literature = literature.replace("-","- ");
             literature = literature.replace("\n\n","\n");
             literature = literature.replace("\n\n","\n");
             literature = literature.replace("\n\n","\n");
