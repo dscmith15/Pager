@@ -212,6 +212,12 @@ public class RsvpActivity extends AppCompatActivity {
 
     protected void onDestroy() {
         super.onDestroy();
+        if (!threadSuspended) {
+            threadSuspended = true;
+            pauser.setVisibility(View.INVISIBLE);
+            player.setVisibility(View.VISIBLE);
+            pausedInd.setVisibility(View.VISIBLE);
+        }
         proploc = (float) counter/litSplit.length;
         editor = prefs.edit();
         editor.putInt("chapter", lastloc); // value to store
@@ -247,6 +253,12 @@ public class RsvpActivity extends AppCompatActivity {
 
     protected void onPause(){
         super.onPause();
+        if (!threadSuspended) {
+            threadSuspended = true;
+            pauser.setVisibility(View.INVISIBLE);
+            player.setVisibility(View.VISIBLE);
+            pausedInd.setVisibility(View.VISIBLE);
+        }
         proploc = (float) counter/litSplit.length;
         editor = prefs.edit();
         editor.putInt("chapter", lastloc); // value to store
@@ -269,6 +281,12 @@ public class RsvpActivity extends AppCompatActivity {
 
     protected void onRestart(){
         super.onRestart();
+        if (!threadSuspended) {
+            threadSuspended = true;
+            pauser.setVisibility(View.INVISIBLE);
+            player.setVisibility(View.VISIBLE);
+            pausedInd.setVisibility(View.VISIBLE);
+        }
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(
                 //View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -281,6 +299,12 @@ public class RsvpActivity extends AppCompatActivity {
 
     protected void onStop(){
         super.onStop();
+        if (!threadSuspended) {
+            threadSuspended = true;
+            pauser.setVisibility(View.INVISIBLE);
+            player.setVisibility(View.VISIBLE);
+            pausedInd.setVisibility(View.VISIBLE);
+        }
         proploc = (float) counter/litSplit.length;
         editor = prefs.edit();
         editor.putInt("chapter", lastloc); // value to store
@@ -426,7 +450,7 @@ public class RsvpActivity extends AppCompatActivity {
     }
 
     public void slowRSVP(View view) {
-        if (wpm>0) {
+        if (wpm>10) {
             wpm -= 10;
         }
         // show end user new wpm
@@ -594,7 +618,7 @@ public class RsvpActivity extends AppCompatActivity {
 
                 editor = prefs.edit();
                 editor.putString("book",getString(R.string.book_title1));
-                editor.putInt("chapter", 4);
+                editor.putInt("chapter", 2);
                 editor.putInt("location", 0);
                 editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);

@@ -508,7 +508,7 @@ public class PagerActivity extends AppCompatActivity {
             case R.id.books_1:
                 editor = prefs.edit();
                 editor.putString("book",getString(R.string.book_title1));
-                editor.putInt("chapter", 4);
+                editor.putInt("chapter", 2);
                 editor.putInt("location", 0);
                 editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);
