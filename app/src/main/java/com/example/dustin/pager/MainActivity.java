@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         if (!UserHistory) {
             editor.putBoolean("userhist", true);
             editor.putInt("read_mode", 4);
-            editor.putInt("chapter", 2);
+            editor.putInt("chapter", 5);
             editor.putFloat("prop_loc",0);
             editor.putInt("location", 0);
             editor.putInt("fontsize", 32);
