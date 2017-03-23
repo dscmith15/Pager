@@ -514,6 +514,8 @@ public class PagerActivity extends AppCompatActivity {
                 editor.putInt("fontsize", textsize);
 
                 editor.commit();
+                lastloc=2;
+                mCurrentIndex=0;
                 pagerm = new Intent(this, PagerActivity.class);
                 pagerm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(pagerm);
@@ -523,12 +525,14 @@ public class PagerActivity extends AppCompatActivity {
             case R.id.books_2:
                 editor = prefs.edit();
                 editor.putString("book",getString(R.string.book_title2));
-                editor.putInt("chapter", 6);
+                editor.putInt("chapter", 2);
                 editor.putInt("location", 0);
                 editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);
 
                 editor.commit();
+                lastloc=2;
+                mCurrentIndex=0;
                 pagerm = new Intent(this, PagerActivity.class);
                 pagerm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(pagerm);
@@ -538,12 +542,14 @@ public class PagerActivity extends AppCompatActivity {
             case R.id.books_3:
                 editor = prefs.edit();
                 editor.putString("book",getString(R.string.book_title3));
-                editor.putInt("chapter", 5);
+                editor.putInt("chapter", 2);
                 editor.putInt("location", 0);
                 editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);
 
                 editor.commit();
+                lastloc=2;
+                mCurrentIndex=0;
                 pagerm = new Intent(this, PagerActivity.class);
                 pagerm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(pagerm);

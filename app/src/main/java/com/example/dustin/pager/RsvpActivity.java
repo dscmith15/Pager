@@ -624,6 +624,8 @@ public class RsvpActivity extends AppCompatActivity {
                 editor.putInt("fontsize", textsize);
                 editor.putInt("rsvpSpeed",wpm);
                 editor.commit();
+                lastloc=2;
+                counter=0;
                 m_rsvp = new Intent(this, RsvpActivity.class);
                 m_rsvp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(m_rsvp);
@@ -633,12 +635,14 @@ public class RsvpActivity extends AppCompatActivity {
             case R.id.books_2:
                 editor = prefs.edit();
                 editor.putString("book",getString(R.string.book_title2));
-                editor.putInt("chapter", 6);
+                editor.putInt("chapter", 2);
                 editor.putInt("location", 0);
                 editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);
                 editor.putInt("rsvpSpeed",wpm);
                 editor.commit();
+                lastloc=2;
+                counter=0;
                 m_rsvp = new Intent(this, RsvpActivity.class);
                 m_rsvp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(m_rsvp);
@@ -648,12 +652,14 @@ public class RsvpActivity extends AppCompatActivity {
             case R.id.books_3:
                 editor = prefs.edit();
                 editor.putString("book",getString(R.string.book_title3));
-                editor.putInt("chapter", 5);
+                editor.putInt("chapter", 2);
                 editor.putInt("location", 0);
                 editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);
                 editor.putInt("rsvpSpeed",wpm);
                 editor.commit();
+                lastloc=2;
+                counter=0;
                 m_rsvp = new Intent(this, RsvpActivity.class);
                 m_rsvp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(m_rsvp);

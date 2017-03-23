@@ -787,6 +787,8 @@ public class ScrollActivity extends AppCompatActivity {
                 editor.putInt("fontsize", textsize);
                 editor.putInt("offset",offsettx);
                 editor.commit();
+                lastloc=2;
+                counter=0;
                 scrollm = new Intent(this, ScrollActivity.class);
                 scrollm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(scrollm);
@@ -802,6 +804,8 @@ public class ScrollActivity extends AppCompatActivity {
                 editor.putInt("fontsize", textsize);
                 editor.putInt("offset",offsettx);
                 editor.commit();
+                lastloc=2;
+                counter=0;
                 scrollm = new Intent(this, ScrollActivity.class);
                 scrollm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(scrollm);
@@ -817,6 +821,8 @@ public class ScrollActivity extends AppCompatActivity {
                 editor.putInt("fontsize", textsize);
                 editor.putInt("offset",offsettx);
                 editor.commit();
+                lastloc=2;
+                counter=0;
                 scrollm = new Intent(this, ScrollActivity.class);
                 scrollm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(scrollm);
