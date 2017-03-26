@@ -618,13 +618,13 @@ public class RsvpActivity extends AppCompatActivity {
 
                 editor = prefs.edit();
                 editor.putString("book",getString(R.string.book_title1));
-                editor.putInt("chapter", 2);
+                editor.putInt("chapter",  getResources().getInteger(R.integer.book1_chap));
                 editor.putInt("location", 0);
                 editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);
                 editor.putInt("rsvpSpeed",wpm);
                 editor.commit();
-                lastloc=2;
+                lastloc=getResources().getInteger(R.integer.book1_chap);
                 counter=0;
                 m_rsvp = new Intent(this, RsvpActivity.class);
                 m_rsvp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -635,13 +635,13 @@ public class RsvpActivity extends AppCompatActivity {
             case R.id.books_2:
                 editor = prefs.edit();
                 editor.putString("book",getString(R.string.book_title2));
-                editor.putInt("chapter", 2);
+                editor.putInt("chapter",  getResources().getInteger(R.integer.book2_chap));
                 editor.putInt("location", 0);
                 editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);
                 editor.putInt("rsvpSpeed",wpm);
                 editor.commit();
-                lastloc=2;
+                lastloc=getResources().getInteger(R.integer.book2_chap);
                 counter=0;
                 m_rsvp = new Intent(this, RsvpActivity.class);
                 m_rsvp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -652,13 +652,13 @@ public class RsvpActivity extends AppCompatActivity {
             case R.id.books_3:
                 editor = prefs.edit();
                 editor.putString("book",getString(R.string.book_title3));
-                editor.putInt("chapter", 2);
+                editor.putInt("chapter",  getResources().getInteger(R.integer.book3_chap));
                 editor.putInt("location", 0);
                 editor.putFloat("prop_loc",0);
                 editor.putInt("fontsize", textsize);
                 editor.putInt("rsvpSpeed",wpm);
                 editor.commit();
-                lastloc=2;
+                lastloc=getResources().getInteger(R.integer.book3_chap);
                 counter=0;
                 m_rsvp = new Intent(this, RsvpActivity.class);
                 m_rsvp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

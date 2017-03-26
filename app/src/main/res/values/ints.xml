@@ -5,4 +5,7 @@
     <integer name="chapter">1</integer>
     <integer name="location">0</integer>
     <integer name="reader_type">1</integer>
+    <integer name="book1_chap">6</integer>
+    <integer name="book2_chap">6</integer>
+    <integer name="book3_chap">5</integer>
 </resources>

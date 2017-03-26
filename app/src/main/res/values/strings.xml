@@ -117,7 +117,7 @@
     <string name="Books">Books</string>
     <string name="Bookdiag">Books</string>
     <string name="defaultbook">1</string>
-    <string name="book_title1">Assault_at_Selonia_by_Roger_Allen_MacBride.epub</string>
-    <string name="book_title2">Ambush_at_Corellia_by_Macbride_Roger_Allen.epub</string>
-    <string name="book_title3">Showdown_at_Centerpoint_by_Macbride_Roger_Allen.epub</string>
+    <string name="book_title1">[Bill_OReilly]_Whos_looking_out_for_you(BookFi).epub</string>
+    <string name="book_title2">[Oreilly_Bill]_Pinheads_and_Patriots(BookFi).epub</string>
+    <string name="book_title3">[OReilly_Bill]_Pinheads_and_Patriots_Where_You_S(BookFi).epub</string>
 </resources>

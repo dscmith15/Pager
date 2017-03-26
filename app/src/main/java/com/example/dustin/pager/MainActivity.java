@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         if (!UserHistory) {
             editor.putBoolean("userhist", true);
             editor.putInt("read_mode", 4);
-            editor.putInt("chapter", 2);
+            editor.putInt("chapter",  getResources().getInteger(R.integer.book1_chap));
             editor.putFloat("prop_loc",0);
             editor.putInt("location", 0);
             editor.putInt("fontsize", 32);
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
             editor.putInt("rsvpSpeed", 250);
             //editor.putInt("scrolldist",0);
             editor.putFloat("scrollSpeed", 200);
-            editor.putString("book", getString(R.string.book_title2));
+            editor.putString("book", getString(R.string.book_title1));
             editor.commit();
         } else {
             if (reading_mode == 1){ // this is RSVP
@@ -194,21 +194,21 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.books_1:
                 editor.putString("book",getString(R.string.book_title1));
-                editor.putInt("chapter", 2);
+                editor.putInt("chapter", getResources().getInteger(R.integer.book1_chap));
                 editor.putInt("location", 0);
                 editor.commit();
                 return true;
 
             case R.id.books_2:
                 editor.putString("book",getString(R.string.book_title2));
-                editor.putInt("chapter", 2);
+                editor.putInt("chapter",  getResources().getInteger(R.integer.book2_chap));
                 editor.putInt("location", 0);
                 editor.commit();
                 return true;
 
             case R.id.books_3:
                 editor.putString("book",getString(R.string.book_title3));
-                editor.putInt("chapter", 2);
+                editor.putInt("chapter",  getResources().getInteger(R.integer.book3_chap));
                 editor.putInt("location", 0);
                 editor.commit();
                 return true;
